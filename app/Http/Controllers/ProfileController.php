@@ -1,0 +1,198 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Storage;
+
+class ProfileController extends Controller
+{
+    /**
+     * Display the user's profile form.
+     */
+    public function edit(Request $request): Response
+    {
+        // Get all social networks
+        $socialNetworks = \App\Models\SocialNetwork::all();
+        $user = $request->user();
+        $user->load('socialNetworks.socialNetwork');
+        return Inertia::render('Profile/Edit', compact('user', 'socialNetworks'));
+    }
+
+    /**
+     * Display the password change form.
+     */
+    public function changePassword(Request $request): Response
+    {
+        return Inertia::render('Profile/ChangePassword', [
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Update the user's photos.
+     */
+    public function uploadPhoto(Request $request): HttpResponse
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'banner_picture' => ['nullable', 'image', 'max:1024'],
+            'profile_picture' => ['nullable', 'image', 'max:1024'],
+            'logo' => ['nullable', 'image', 'max:1024'],
+        ]);
+        
+        if ($request->hasFile('banner_picture')) {
+            $user->banner_picture = Storage::url($request->file('banner_picture')->store('public'));
+            $url = $user->banner_picture;
+        } elseif ($request->hasFile('profile_picture')) {
+            $user->profile_picture = Storage::url($request->file('profile_picture')->store('public'));
+            $url = $user->profile_picture;
+        } elseif ($request->hasFile('logo')) {
+            $user->logo = Storage::url($request->file('logo')->store('public'));
+            $url = $user->logo;
+        }
+
+        $user->save();
+
+        return $request->wantsJson()
+                    ? new HttpResponse(['message' => 'Photo Uploaded Successfully', 'url' => $url], 200)
+                    : back()->with('status', 'profile-photo-updated');
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function update(Request $request): HttpResponse
+    {
+        $request->validate([
+            'name' => ['required', 'max:255'],
+            'username' => ['required', 'max:255', 'alpha_dash', 'unique:users,username,'.$request->user()->id],
+            'email' => ['required', 'email'],
+            'bio' => ['nullable', 'max:500'],
+            'phone' => ['nullable', 'max:255'],
+            'website' => ['nullable', 'max:255'],
+            'social_networks' => ['nullable', 'array'],
+            'social_networks.*.id' => ['nullable', 'integer'],
+            'social_networks.*.social_network_id' => ['required', 'integer'],
+            'social_networks.*.url' => ['required', 'max:255'],
+            'social_networks.*.name' => ['required', 'max:255'],
+        ]);
+
+
+        $request->user()->fill($request->all());
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+        $socialNetworks = $request->input('social_networks');
+        $user = $request->user();
+        $existingSocialNetworks = $user->socialNetworks()->pluck('id')->toArray();
+
+        foreach ($socialNetworks as $order => $socialNetwork) {
+            $social_network_id = $socialNetwork['social_network_id'];
+            $url = $socialNetwork['url'];
+            $name = $socialNetwork['name'];
+
+            $data = compact('social_network_id', 'url', 'name', 'order');
+
+            if (isset($socialNetwork['id']) && in_array($socialNetwork['id'], $existingSocialNetworks)) {
+                // Update existing social network
+                $user->socialNetworks()->where('id', $socialNetwork['id'])->update($data);
+            } else {
+                // Create new social network
+                $user->socialNetworks()->create($data);
+            }
+        }
+        return $request->wantsJson()
+                    ? new HttpResponse(['message' => 'Profile Updated Successfully'], 200)
+                    : back()->with('status', 'profile-information-updated');
+
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
+    }
+
+    public function publicProfile($username){
+        $user = \App\Models\User::where('username', $username)->with('socialNetworks.socialNetwork')->firstOrFail();
+        $networks = \App\Models\SocialNetwork::all();
+        return Inertia::render('PublicProfile', compact('user', 'networks'));
+    }
+
+    public function publicProfileId($id){
+        $user = \App\Models\User::find($id);
+        if(!$user){
+            return redirect()->route('home');
+        }
+        if($user->username){
+            return redirect()->route('public_profile', $user->username);
+        }
+        $networks = \App\Models\SocialNetwork::all();
+        return Inertia::render('PublicProfile', compact('user', 'networks'));
+    }
+
+    public function deleteBanner(Request $request){
+        $user = $request->user();
+        Storage::delete($user->banner_picture);
+        $user->banner_picture = null;
+        $user->save();
+
+        return $request->wantsJson()
+                    ? new HttpResponse(['message' => 'Banner Deleted Successfully'], 200)
+                    : back()->with('status', 'banner-deleted');
+    }
+
+    public function connectRequest(Request $request){
+
+        $request->validate([
+            'user_id' => ['required', 'integer'],
+            'name' => ['required', 'max:255'],
+            'email' => ['required', 'email'],
+            'phone' => ['nullable', 'max:255'],
+            'message' => ['required', 'max:500'],
+        ]);
+
+        // store the request as a ContactRequest and email the user about it
+
+        $contactRequest = new \App\Models\ContactRequest($request->all());
+        $contactRequest->save();
+
+        $user = \App\Models\User::find($request->user_id);
+        // event(new \App\Events\ContactRequestReceived($user, $contactRequest));
+
+        return $request->wantsJson()
+                    ? new HttpResponse(['message' => 'Request Sent Successfully', 'success' => true], 200)
+                    : back()->with('status', 'request-sent');
+
+    }
+
+}
