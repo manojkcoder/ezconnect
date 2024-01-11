@@ -41,13 +41,7 @@ const downloadVCF = () => {
     }, {});
     vCard.title = props.user.title;
     vCard.note = props.user.bio;
-
-    // console.log(vCard);
-    //save to file
-    // vCard.saveToFile('./eric-nesser.vcf');
-
-    //get as formatted string
-    // console.log(vCard.getFormattedString());
+    
     const link = document.createElement("a");
     const content = vCard.getFormattedString();
     const file = new Blob([content], { type: 'text/plain' });
@@ -88,11 +82,19 @@ const sendConnectRequest = () => {
         }
     });
 }
+
+const clickTracker = (network) => {
+    axios.post(route('click_tracker', network)).then(response => {
+        // console.log(response);
+    }).catch(error => {
+        console.log(error);
+    });
+}
 </script>
 
 <template>
     <section class="sectionSideBar profile-page" v-bind:style="props.user.banner_picture ? { backgroundImage: 'url(' + props.user.banner_picture + ')' } : {}">
-        <Show :user="props.user" :networks="props.networks" :downloadContact="downloadVCF" :connectFormToggle="toggleConnectForm"/>
+        <Show :user="props.user" :networks="props.networks" :downloadContact="downloadVCF" :connectFormToggle="toggleConnectForm" :clickTracker="clickTracker"/>
     </section>
 
     <div class="popup-wrapper profile-popup" v-show="connectFormVisible">
@@ -113,10 +115,10 @@ const sendConnectRequest = () => {
                     </div><!--- Form Container  End --> 
                 </div><!--- Form wrapper End --> 
 
-                    <div class="form-submit">
-                        <input class="site-btn dark-btn submit" type="submit" value="Lets Connect">
-                    </div>
-                </form><!-- Form End-->
-            </div>
+                <div class="form-submit">
+                    <input class="site-btn dark-btn submit" type="submit" value="Lets Connect">
+                </div>
+            </form><!-- Form End-->
         </div>
+    </div>
 </template>

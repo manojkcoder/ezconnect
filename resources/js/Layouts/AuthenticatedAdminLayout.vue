@@ -12,7 +12,7 @@ import AdminSidebar from './AdminSidebar.vue';
             <div class="nav">
                 <nav>
                     <ul>
-                        <li><a :href="{}" class="site-btn">View Profile</a></li>
+                        <li><a :href="{}" style="visibility: hidden;" class="site-btn">View Profile</a></li>
                         <li><a :href="route('logout')"> <i class="icon-logout-icon"></i>Logout</a></li>
                     </ul>
                 </nav>

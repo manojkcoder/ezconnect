@@ -9,6 +9,10 @@ class ContactRequest extends Model
 {
     use HasFactory;
 
+    protected $appends = [
+        'formatted_created_at',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,4 +25,9 @@ class ContactRequest extends Model
         'phone',
         'message',
     ];
+
+    public function getFormattedCreatedAtAttribute()
+    {
+        return $this->created_at->format('d M Y, h:i A');
+    }
 }

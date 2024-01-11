@@ -26,4 +26,9 @@ class UserSocialNetwork extends Model
     {
         return $this->belongsTo(SocialNetwork::class);
     }
+
+    public function clicks()
+    {
+        return $this->hasMany(LinkClick::class);
+    }
 }

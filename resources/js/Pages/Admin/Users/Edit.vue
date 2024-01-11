@@ -7,19 +7,26 @@ import Form from './Form.vue';
 
 const formErrors = ref({});
 
-const formData = ref({
-    name: '',
-    email: '',
-    welcome_email: true,
+const props = defineProps({
+    user: {
+        type: Object,
+        required: true,
+    },
 });
 
-const createUser = async () => {
+const formData = ref({
+    name: props.user.name,
+    email: props.user.email,
+    is_blocked: props.user.is_blocked
+});
+
+const updateUser = async () => {
     try {
-        await axios.post(route('admin.users.store'), formData.value);
-        toast.success('User created successfully');
+        await axios.patch(route('admin.users.update', props.user.id), formData.value);
+        toast.success('User updated successfully');
         router.visit(route('admin.dashboard'));
     } catch (error) {
-        toast.error('Error creating user');
+        toast.error('Error updateing user');
         formErrors.value = error.response.data.errors;
     }
 };
@@ -35,7 +42,7 @@ const createUser = async () => {
                 <h1 class="mb-0">Add User</h1>
             </div>
             <section class="section">
-                <Form :form-handler="createUser" :form-data="formData" :form-errors="formErrors"/>
+                <Form :form-handler="updateUser" :form-data="formData" :form-errors="formErrors"/>
             </section>
         </main>
     </AuthenticatedAdminLayout>

@@ -145,6 +145,7 @@ class ProfileController extends Controller
     public function publicProfile($username){
         $user = \App\Models\User::where('username', $username)->with('socialNetworks.socialNetwork')->firstOrFail();
         $networks = \App\Models\SocialNetwork::all();
+        event(new \App\Events\ProfileVisited($user->id));
         return Inertia::render('PublicProfile', compact('user', 'networks'));
     }
 
@@ -156,6 +157,7 @@ class ProfileController extends Controller
         if($user->username){
             return redirect()->route('public_profile', $user->username);
         }
+        event(new \App\Events\ProfileVisited($user->id));
         $networks = \App\Models\SocialNetwork::all();
         return Inertia::render('PublicProfile', compact('user', 'networks'));
     }
@@ -193,6 +195,30 @@ class ProfileController extends Controller
                     ? new HttpResponse(['message' => 'Request Sent Successfully', 'success' => true], 200)
                     : back()->with('status', 'request-sent');
 
+    }
+
+    public function storeChangePassword(Request $request){
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $request->user()->update([
+            'password' => bcrypt($request->password),
+        ]);
+
+        return $request->wantsJson()
+                    ? new HttpResponse(['message' => 'Password Changed Successfully'], 200)
+                    : back()->with('status', 'password-updated');
+
+    }
+
+    public function clickTracker($network, Request $request){
+        event(new \App\Events\LinkClicked($network));
+
+        return $request->wantsJson()
+                    ? new HttpResponse(['message' => 'Click Tracked Successfully', 'success' => true], 200)
+                    : back()->with('status', 'click-tracked');
     }
 
 }
