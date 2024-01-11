@@ -30,6 +30,7 @@ class User extends Authenticatable
         'bio',
         'profile_picture',
         'logo',
+        'is_blocked'
     ];
 
     /**
@@ -72,5 +73,13 @@ class User extends Authenticatable
     public function socialNetworks()
     {
         return $this->hasMany(UserSocialNetwork::class)->orderBy('order');
+    }
+
+    /**
+     * Get the user's contact requests.
+     */
+    public function contactRequests()
+    {
+        return $this->hasMany(ContactRequest::class);
     }
 }

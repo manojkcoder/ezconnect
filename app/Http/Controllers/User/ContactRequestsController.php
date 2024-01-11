@@ -18,7 +18,7 @@ class ContactRequestsController extends Controller
 
     public function allRequests(Request $request)
     {
-        return ContactRequest::when(
+        return auth()->user()->contactRequests()->when(
             $request->search,
             function ($query, $search) {
                 $query->where('name', 'LIKE', '%'.$search.'%')

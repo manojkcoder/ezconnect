@@ -31,21 +31,28 @@ Route::get('/', function () {
 Route::get('profile/{username}', [ProfileController::class, 'publicProfile'])->name('public_profile');
 Route::get('profile/id/{id}', [ProfileController::class, 'publicProfileId'])->name('public_profile_id');
 Route::post('connectRequest', [ProfileController::class, 'connectRequest'])->name('connect_request');
+Route::post('clickTracker/{network}', [ProfileController::class, 'clickTracker'])->name('click_tracker');
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/users/add', [AdminDashboardController::class, 'addUser'])->name('users.create');
+    Route::put('/users/toggleBlockStatus/{id}', [AdminDashboardController::class, 'toggleBlockStatus'])->name('users.toggle-block-status');
     Route::post('/users', [AdminDashboardController::class, 'storeUser'])->name('users.store');
+    Route::delete('/users/{id}', [AdminDashboardController::class, 'destroyUser'])->name('users.destroy');
+    Route::patch('/users/{id}', [AdminDashboardController::class, 'updateUser'])->name('users.update');
+    Route::get('/users/{id}', [AdminDashboardController::class, 'editUser'])->name('users.edit');
     Route::get('/all-users', [AdminDashboardController::class, 'allUsers'])->name('all-users');
 });
 
 Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/get-stats', [DashboardController::class, 'getStats'])->name('dashboard.get-stats');
 
     // Profile...
     Route::group(['prefix' => 'profile'], function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::get('/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+        Route::post('/change-password', [ProfileController::class, 'storeChangePassword'])->name('profile.change-password.store');
         Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
         Route::post('/upload-photo', [ProfileController::class, 'uploadPhoto'])->name('profile.upload-photo');
         Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');

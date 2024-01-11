@@ -10,6 +10,7 @@ const headers = [
     { text: "Email", value: "email", sortable: true },
     //phone
     { text: "Phone", value: "phone", sortable: true },
+    { text: "Date", value: "created_at", sortable: true },
     {text: "Actions", value: "actions", sortable: false}
 ];
 
@@ -59,7 +60,7 @@ const showCompleteDetails = (item = null) => {
 }
 
 const deleteContactRequest = (id) => {
-    axios.delete(route('contact-requests.destroy', id)).then(response => {
+    confirm('Are you sure you want to delete this contact request?') && axios.delete(route('contact-requests.destroy', id)).then(response => {
         if(response.data.success){
             loadFromServer();
             toast.success(response.data.message);
@@ -104,6 +105,9 @@ const deleteContactRequest = (id) => {
                                     </template>
                                     <li><a :disabled="isLastPage" @click="nextPage">❯</a></li>
                                 </ul>
+                            </template>
+                            <template #item-created_at="item">
+                                {{ item.formatted_created_at }}
                             </template>
                         </vue3-easy-data-table>
                     </div>

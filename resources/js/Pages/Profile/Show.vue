@@ -16,6 +16,10 @@ const props = defineProps({
     connectFormToggle: {
         type: Function,
         default: null
+    },
+    clickTracker: {
+        type: Function,
+        default: null
     }
 })
 
@@ -41,7 +45,7 @@ const props = defineProps({
 
         <h3>Social Media</h3>
         <div class="flex-row social-media">
-            <a class="" :href="network.url" v-for="(network, index) in user.social_networks" target="_blank">
+            <a class="" :href="network.url" v-for="(network, index) in user.social_networks" target="_blank" v-on:click="clickTracker(network.id)">
                 <span class="icon svg-icon" :class="network.social_network.icon"></span>
                 <span v-text="network.name"></span>
             </a>

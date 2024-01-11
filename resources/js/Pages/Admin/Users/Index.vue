@@ -1,8 +1,11 @@
 <script setup>
 import AuthenticatedAdminLayout from '@/Layouts/AuthenticatedAdminLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import axios from 'axios';
 import { ref, watch } from 'vue';
 import Vue3EasyDataTable from 'vue3-easy-data-table';
+import {toast} from 'vue3-toastify';
+import QrcodeVue from 'qrcode.vue';
 
 
 const headers = [
@@ -45,8 +48,44 @@ watch([serverOptions, search], () => {
     loadFromServer();
 }, { deep: true });
 
+const toggleUserBlockStatus = async (user) => {
+    axios.put(route('admin.users.toggle-block-status', user.id)).then(response => {
+        if(response.data.success){
+            toast.success(response.data.message);
+            loadFromServer();
+        }
+    }).catch(error => {
+        console.log(error);
+    });
+}
+
+const deleteUser = async (user) => {
+    confirm("Are you sure you want to delete this user?") &&
+    axios.delete(route('admin.users.destroy', user.id)).then(response => {
+        if(response.data.success){
+            toast.success(response.data.message);
+            loadFromServer();
+        }
+    }).catch(error => {
+        console.log(error);
+    });
+}
+
 loadFromServer();
 
+const showQRCode = ref(false);
+const user = ref({});
+
+const downloadQRCode = (item) => {
+    showQRCode.value = !showQRCode.value;
+    user.value = item;
+}
+const downloadQr = () => {
+    const link = document.createElement('a')
+    link.download = `qr-code.png`
+    link.href = document.querySelector('.popup-wrapper canvas').toDataURL()
+    link.click()
+}
 
 </script>
 
@@ -75,20 +114,24 @@ loadFromServer();
                         <template #item-name="user">
                             <div class="profile-picture">
                                 <span class="img-wrapper">
-                                    <img :src="user.profile_picture" :alt="user.name">  
+                                    <img :src="user.profile_picture" :alt="user.name" v-if="user.profile_picture">
+                                    <div v-else></div>
                                 </span>
                                 <span class="name" v-text="user.name"></span>
                             </div>
                         </template>
                         <template #item-actions="user">
                             <div class="flex-row">
-                                <button class="transparent-button" type="button">
+                                <button class="transparent-button" type="button" @click="downloadQRCode(user)">
+                                    <i class="icon-qrcode"></i>
+                                </button>
+                                <button class="transparent-button" :class="user.is_blocked ? 'blocked' : 'not-blocked'" type="button" @click="toggleUserBlockStatus(user)">
                                     <i class="icon-blockuser-icon"></i>
                                 </button>
-                                <button class="transparent-button" type="button">
+                                <a :href="route('admin.users.edit', user.id)">
                                     <i class="icon-view-profile-icon"></i>
-                                </button>
-                                <button class="transparent-button" type="button">
+                                </a>
+                                <button class="transparent-button" type="button" @click="deleteUser(user)">
                                     <i class="icon-delete-profile-icon"></i>
                                 </button>
                             </div>
@@ -106,6 +149,17 @@ loadFromServer();
                 </div>
             </section>
         </main>
+
+    <div class="popup-wrapper" v-show="showQRCode">
+        <div class="container"> 
+            <a class="close-btn" @click="showQRCode = !showQRCode"><i class="icon-close-icon"></i></a>
+            <div style="background: white;display: flex; flex-direction: column; padding: 20px;">
+                <h2 style="text-align: center;margin-bottom: 0;">Profile QR Code</h2>
+                <qrcode-vue v-if="user && user.hasOwnProperty('id')" :margin="2" :size="400" :value="route('public_profile_id', user.id)"/>
+                <button class="site-btn" type="button" @click="downloadQr">Download <i class="icon-download-icon"></i></button>
+            </div>
+        </div>
+    </div>
     </AuthenticatedAdminLayout>
 </template>
 

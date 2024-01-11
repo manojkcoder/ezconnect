@@ -223,7 +223,7 @@ const deleteBanner = async () => {
                                                 <div class="social-media-icon">
                                                     <span class="icon svg-icon" :class="element.social_network.icon"></span>
                                                 </div>
-                                                <TextInput :placeholder="'Enter the url here'" label="" :type="'text'" name="url" v-model="element.url" :error="getError(index, 'url')" required />
+                                                <TextInput :placeholder="'Enter the '+element.social_network.type+' here'" label="" :type="'text'" name="url" v-model="element.url" :error="getError(index, 'url')" required />
                                                 <TextInput :placeholder="'Enter the name here'" label="" :type="'text'" name="name" v-model="element.name" :error="getError(index, 'name')" required />
 
                                             </div>

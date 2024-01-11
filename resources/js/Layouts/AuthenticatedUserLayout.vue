@@ -50,7 +50,7 @@ const downloadQr = () => {
             <a class="close-btn" @click="showQR = !showQR"><i class="icon-close-icon"></i></a>
                 <div style="background: white;display: flex; flex-direction: column; padding: 20px;">
                     <h2 style="text-align: center;margin-bottom: 0;">Profile QR Code</h2>
-                    <qrcode-vue :margin="2" :size="400" :value="route(user.username ? 'public_profile' :  'public_profile_id', user.username ? user.username : user.id)"/>
+                    <qrcode-vue :margin="2" :size="400" :value="route('public_profile_id', user.id)"/>
                     <button class="site-btn" type="button" @click="downloadQr">Download <i class="icon-download-icon"></i></button>
                 </div>
             </div>

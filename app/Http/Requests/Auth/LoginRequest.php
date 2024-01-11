@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class LoginRequest extends FormRequest
 {
@@ -41,6 +42,8 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        $this->ensureUserIsNotBlocked();
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
@@ -73,6 +76,24 @@ class LoginRequest extends FormRequest
                 'minutes' => ceil($seconds / 60),
             ]),
         ]);
+    }
+
+    /**
+     * Ensure the user is not blocked.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+
+    public function ensureUserIsNotBlocked(): void
+    {
+        if ( !User::where('email', $this->input('email'))->first()->is_blocked ) {
+            return;
+        }
+
+        throw ValidationException::withMessages([
+            'email' => 'Your account has been blocked. Please contact support.',
+        ]);
+
     }
 
     /**

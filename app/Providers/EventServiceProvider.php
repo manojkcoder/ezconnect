@@ -10,7 +10,10 @@ use App\Events\UserCreated;
 use App\Listeners\SendWelcomeEmail;
 use App\Events\ContactRequestReceived;
 use App\Listeners\SendContactRequestEmail;
-
+use App\Events\LinkClicked;
+use App\Listeners\TrackLinkClicks;
+use App\Events\ProfileVisited;
+use App\Listeners\TrackProfileVisits;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -28,6 +31,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         ContactRequestReceived::class => [
             SendContactRequestEmail::class,
+        ],
+        LinkClicked::class => [
+            TrackLinkClicks::class,
+        ],
+        ProfileVisited::class => [
+            TrackProfileVisits::class,
         ],
     ];
 

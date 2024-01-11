@@ -72,7 +72,7 @@ class DashboardController extends Controller
      */
     public function allUsers(Request $request)
     {
-        return User::when(
+        return User::where('user_type', 'user')->when(
             $request->search,
             function ($query, $search) {
                 $query->where('name', 'LIKE', '%'.$search.'%')
@@ -85,5 +85,36 @@ class DashboardController extends Controller
             },
         )
         ->paginate($request->rowsPerPage, ['*'], 'page', $request->page);
+    }
+
+    public function toggleBlockStatus(Request $request)
+    {
+        $user = User::findOrFail($request->id);
+        $user->is_blocked = !$user->is_blocked;
+        $user->save();
+
+        return $request->wantsJson()
+                    ? new HttpResponse(['message' => 'User updated.', 'success' => true], 200)
+                    : redirect()->route('admin.dashboard');
+    }
+
+    public function updateUser(Request $request)
+    {
+        $user = User::findOrFail($request->id);
+        $user->update($request->all());
+
+        return $request->wantsJson()
+                    ? new HttpResponse(['message' => 'User updated.', 'success' => true], 200)
+                    : redirect()->route('admin.dashboard');
+    }
+
+    public function destroyUser(Request $request)
+    {
+        $user = User::findOrFail($request->id);
+        $user->delete();
+
+        return $request->wantsJson()
+                    ? new HttpResponse(['message' => 'User deleted.', 'success' => true], 200)
+                    : redirect()->route('admin.dashboard');
     }
 }
