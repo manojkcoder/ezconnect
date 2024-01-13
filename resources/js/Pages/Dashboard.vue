@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedUserLayout from '@/Layouts/AuthenticatedUserLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import { withDirectives } from 'vue';
 import { watch } from 'vue';
 import { ref } from 'vue';
 
@@ -35,6 +36,22 @@ watch(formData, () => {
 }, { deep: true });
 
 loadStatsFromServer();
+
+const vTooltip = {
+    mounted(el, binding) {
+      init(el, binding);
+    },
+    updated(el, binding) {
+      init(el, binding);
+    }
+};
+
+function init(el, binding) {
+  let position = binding.arg || "top";
+  let tooltipText = binding.value || "Tooltip text";
+  el.setAttribute("position", position);
+  el.setAttribute("tooltip", tooltipText);
+}
 </script>
 
 <template>
@@ -73,8 +90,8 @@ loadStatsFromServer();
                             </div>
 
                             <div class="performace-icons">
-                                <a href=""><img src="../../images/icons/view-gray-icon.svg">Views</a>
-                                <a href=""><img src="../../images/icons/info-icon.svg"></a>
+                                <span><img src="../../images/icons/view-gray-icon.svg">Views</span>
+                                <span v-tooltip:bottom.tooltip="'Profile Visits in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
                             </div>
                         </div>
                         <!-- Card 2-->
@@ -91,8 +108,8 @@ loadStatsFromServer();
                             </div>
 
                             <div class="performace-icons">
-                                <a href=""><img src="../../images/icons/tap-links-icon.svg">Link Taps</a>
-                                <a href=""><img src="../../images/icons/info-icon.svg"></a>
+                                <span><img src="../../images/icons/tap-links-icon.svg">Link Taps</span>
+                                <span v-tooltip:bottom.tooltip="'Social Links tapped in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
                             </div>
                         </div>
 
@@ -103,8 +120,8 @@ loadStatsFromServer();
                             </div>
 
                             <div class="performace-icons">
-                                <a href=""><img src="../../images/icons/rate-icon.svg">Tap through rate</a>
-                                <a href=""><img src="../../images/icons/info-icon.svg"></a>
+                                <span><img src="../../images/icons/rate-icon.svg">Tap through rate</span>
+                                <span v-tooltip:bottom.tooltip="'No of profile visits leading to link clicks.'"><img src="../../images/icons/info-icon.svg"></span>
                             </div>
                         </div>
                     </div>
