@@ -8,6 +8,7 @@ const page = usePage();
 const user = page.props.auth.user;
 
 const showQR = ref(false);
+const mobileToggle = ref(false);
 
 const downloadQr = () => {
     const link = document.createElement('a')
@@ -32,7 +33,7 @@ const downloadQr = () => {
                     </ul>
                 </nav>
             </div>
-            <div class="togglebtn" style="display:none;">
+            <div class="togglebtn" style="display:none;" @click="mobileToggle = !mobileToggle">
                 <div><span></span><span></span><span></span></div>
             </div>
         </div>
@@ -40,7 +41,7 @@ const downloadQr = () => {
     <!---Mai Wrapper Start -->
     <div class="main-wrapper">
         <!---Sidebar Start -->
-        <UserSidebar/>
+        <UserSidebar :mobileToggle="mobileToggle"/>
         <!---- Content Start -->
         <slot />
     </div>

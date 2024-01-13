@@ -63,13 +63,15 @@ class DashboardController extends Controller
             default:
                 $start_date = now()->subDays(3650)->startOfDay();
                 $end_date = now()->endOfDay();
+                $previous_start_date = now()->subDays(7300)->startOfDay();
+                $previous_end_date = now()->subDays(3650)->endOfDay();
                 break;
         }
         // Get user social networks with number of clicks on each link based on the date chosen by user
         $user = $request->user();
         $social_networks = $user->socialNetworks()->with('socialNetwork')->withCount(['clicks' => function($q) use ($start_date, $end_date){
             $q->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date);
-        }])->orderBy('id', 'desc')->get();
+        }])->orderBy('id', 'desc')->get()->sortByDesc('clicks_count')->values()->all();
 
         $visits = ProfileVisit::where('user_id', $user->id)->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->count();
         $previous_visits = ProfileVisit::where('user_id', $user->id)->whereDate('created_at', '>=', $previous_start_date)->whereDate('created_at', '<=', $previous_end_date)->count();

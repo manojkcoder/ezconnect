@@ -5,10 +5,14 @@ defineProps({
         type: String,
         default: '',
     },
+    mobileToggle: {
+        type: Boolean,
+        default: false,
+    },
 });
 </script>
 <template>
-    <div class="sidebar">
+    <div class="sidebar" :class="mobileToggle ? 'active' : ''">
         <ul class="sidebar-menu">
             <li>
                 <a :href="route('dashboard')" :class="active == 'dashboard' || active == '' ? 'current' : ''"><img src="../../images/icons/dashboard-icon.svg" alt="Dashboard"> Dashboard</a>
