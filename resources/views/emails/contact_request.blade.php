@@ -13,6 +13,14 @@
     Email: {{ $contactRequest->email }}
     <br/>
     Phone: {{ $contactRequest->phone }}
+    @if($contactRequest->company)
+        <br/>
+        Company: {{ $contactRequest->company }}
+    @endif
+    @if($contactRequest->title)
+        <br/>
+        Title: {{ $contactRequest->title }}
+    @endif
     <br/>
     Message: {{ $contactRequest->message }}
 </body>

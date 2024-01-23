@@ -4,8 +4,8 @@ import UserSidebar from '@/Layouts/UserSidebar.vue';
 import { usePage } from '@inertiajs/vue3'
 import QrcodeVue from 'qrcode.vue'
 
-const page = usePage();
-const user = page.props.auth.user;
+const {props, url} = usePage();
+const user = props.auth.user;
 
 const showQR = ref(false);
 const mobileToggle = ref(false);
@@ -29,7 +29,7 @@ const downloadQr = () => {
                     <ul>
                         <li><button class="transparent-button" type="button" @click="showQR = !showQR"><i class="icon-qrcode"></i></button></li>
                         <li><a target="_blank" :href="route(user.username ? 'public_profile' :  'public_profile_id', user.username ? user.username : user.id)" class="site-btn">View Profile</a></li>
-                        <li><a :href="route('logout')"> <i class="icon-logout-icon"></i>Logout</a></li>
+                        <li class="hide-on-mobile"><a :href="route('logout')"> <i class="icon-logout-icon"></i>Logout</a></li>
                     </ul>
                 </nav>
             </div>

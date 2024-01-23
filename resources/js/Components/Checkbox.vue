@@ -17,6 +17,9 @@ const props = defineProps({
     class: {
         default: null,
     },
+    error: {
+        type: String,
+    },
 });
 
 const proxyChecked = computed({
@@ -39,7 +42,8 @@ const proxyChecked = computed({
                 v-model="proxyChecked">
                 <span class="switch-toggle"></span>
             </label>
-            {{label}}
+            <span v-html="label"></span>
         </div>
+        <p @if="error" class="error-msg">{{ error }}</p>
     </div>
 </template>

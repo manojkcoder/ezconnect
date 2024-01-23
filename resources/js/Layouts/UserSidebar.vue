@@ -1,15 +1,17 @@
 <script setup>
+import { usePage } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
 defineProps({
-    active: {
-        type: String,
-        default: '',
-    },
     mobileToggle: {
         type: Boolean,
         default: false,
     },
 });
+
+const {url} = usePage();
+
+const active = url.split('/').pop();
+
 </script>
 <template>
     <div class="sidebar" :class="mobileToggle ? 'active' : ''">
@@ -28,6 +30,9 @@ defineProps({
             </li>
             <li>
                 <a :href="route('profile.change-password')" :class="active == 'change-password' ? 'current' : ''"><img src="../../images/icons/password-icon.svg" alt="Change Password">Change Password</a>
+            </li>
+            <li class="show-on-mobile" style="display:none">
+                <a :href="route('logout')"><i class="icon-logout-icon"></i>Logout</a>
             </li>
         </ul>
     </div>

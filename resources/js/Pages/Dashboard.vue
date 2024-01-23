@@ -90,8 +90,8 @@ function init(el, binding) {
                             </div>
 
                             <div class="performace-icons">
-                                <span><img src="../../images/icons/view-gray-icon.svg">Views</span>
-                                <span v-tooltip:bottom.tooltip="'Profile Visits in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
+                                <span style="display: flex;column-gap: 8px;"><img src="../../images/icons/view-gray-icon.svg">Views</span>
+                                <span style="display: flex;" v-tooltip:bottom.tooltip="'Profile Visits in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
                             </div>
                         </div>
                         <!-- Card 2-->
@@ -108,8 +108,8 @@ function init(el, binding) {
                             </div>
 
                             <div class="performace-icons">
-                                <span><img src="../../images/icons/tap-links-icon.svg">Link Taps</span>
-                                <span v-tooltip:bottom.tooltip="'Social Links tapped in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
+                                <span style="display: flex;column-gap: 8px;"><img src="../../images/icons/tap-links-icon.svg">Link Taps</span>
+                                <span style="display: flex;" v-tooltip:bottom.tooltip="'Social Links tapped in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
                             </div>
                         </div>
 
@@ -120,8 +120,8 @@ function init(el, binding) {
                             </div>
 
                             <div class="performace-icons">
-                                <span><img src="../../images/icons/rate-icon.svg">Tap through rate</span>
-                                <span v-tooltip:bottom.tooltip="'No of profile visits leading to link clicks.'"><img src="../../images/icons/info-icon.svg"></span>
+                                <span style="display: flex;column-gap: 8px;"><img src="../../images/icons/rate-icon.svg">Tap through rate</span>
+                                <span style="display: flex;" v-tooltip:bottom.tooltip="'No of profile visits leading to link clicks.'"><img src="../../images/icons/info-icon.svg"></span>
                             </div>
                         </div>
                     </div>
@@ -150,7 +150,7 @@ function init(el, binding) {
                                     </tbody>
                                 </table>
                             </div>
-                            <a class="linktext" :href="route('contact-requests.index')">View All Contact Requests</a>
+                            <a v-if="contact_requests.length > 5" class="linktext" :href="route('contact-requests.index')">View All Contact Requests</a>
 
                         </div>
                     </section>

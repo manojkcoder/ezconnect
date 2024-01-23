@@ -15,6 +15,7 @@ class UserSocialNetwork extends Model
         'url',
         'name',
         'order',
+        'custom_icon_url'
     ];
 
     public function user()

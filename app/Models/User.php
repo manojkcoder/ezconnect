@@ -30,7 +30,8 @@ class User extends Authenticatable
         'bio',
         'profile_picture',
         'logo',
-        'is_blocked'
+        'is_blocked',
+        'customization',
     ];
 
     /**

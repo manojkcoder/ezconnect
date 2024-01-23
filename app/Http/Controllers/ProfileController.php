@@ -21,7 +21,7 @@ class ProfileController extends Controller
     public function edit(Request $request): Response
     {
         // Get all social networks
-        $socialNetworks = \App\Models\SocialNetwork::all();
+        $socialNetworks = \App\Models\SocialNetwork::orderBy('name')->get();
         $user = $request->user();
         $user->load('socialNetworks.socialNetwork');
         return Inertia::render('Profile/Edit', compact('user', 'socialNetworks'));
@@ -46,20 +46,23 @@ class ProfileController extends Controller
         $user = $request->user();
 
         $request->validate([
-            'banner_picture' => ['nullable', 'image', 'max:1024'],
-            'profile_picture' => ['nullable', 'image', 'max:1024'],
-            'logo' => ['nullable', 'image', 'max:1024'],
+            'banner_picture' => ['nullable', 'image', 'max:16384'],
+            'profile_picture' => ['nullable', 'image', 'max:16384'],
+            'logo' => ['nullable', 'image', 'max:16384'],
+            'icon' => ['nullable', 'image', 'max:2048'],
         ]);
         
         if ($request->hasFile('banner_picture')) {
-            $user->banner_picture = Storage::url($request->file('banner_picture')->store('public'));
+            $user->banner_picture = Storage::url($request->file('banner_picture')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'banners'));
             $url = $user->banner_picture;
         } elseif ($request->hasFile('profile_picture')) {
-            $user->profile_picture = Storage::url($request->file('profile_picture')->store('public'));
+            $user->profile_picture = Storage::url($request->file('profile_picture')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'profile_pictures'));
             $url = $user->profile_picture;
         } elseif ($request->hasFile('logo')) {
-            $user->logo = Storage::url($request->file('logo')->store('public'));
+            $user->logo = Storage::url($request->file('logo')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'logos'));
             $url = $user->logo;
+        } elseif ($request->hasFile('icon')) {
+            $url = Storage::url($request->file('icon')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'icons'));
         }
 
         $user->save();
@@ -83,6 +86,7 @@ class ProfileController extends Controller
             'website' => ['nullable', 'max:255'],
             'social_networks' => ['nullable', 'array'],
             'social_networks.*.id' => ['nullable', 'integer'],
+            'social_networks.*.custom_icon_url' => ['nullable', 'string'],
             'social_networks.*.social_network_id' => ['required', 'integer'],
             'social_networks.*.url' => ['required', 'max:255'],
             'social_networks.*.name' => ['required', 'max:255'],
@@ -104,8 +108,9 @@ class ProfileController extends Controller
             $social_network_id = $socialNetwork['social_network_id'];
             $url = $socialNetwork['url'];
             $name = $socialNetwork['name'];
+            $custom_icon_url = $socialNetwork['custom_icon_url'] ?? null;
 
-            $data = compact('social_network_id', 'url', 'name', 'order');
+            $data = compact('social_network_id', 'url', 'name', 'order', 'custom_icon_url');
 
             if (isset($socialNetwork['id']) && in_array($socialNetwork['id'], $existingSocialNetworks)) {
                 // Update existing social network
@@ -179,8 +184,11 @@ class ProfileController extends Controller
             'user_id' => ['required', 'integer'],
             'name' => ['required', 'max:255'],
             'email' => ['required', 'email'],
-            'phone' => ['nullable', 'max:255'],
-            'message' => ['required', 'max:500'],
+            'phone' => ['required', 'max:255'],
+            'company' => ['nullable', 'max:255'],
+            'title' => ['nullable', 'max:255'],
+            'message' => ['nullable', 'max:500'],
+            'terms' => ['required', 'accepted'],
         ]);
 
         // store the request as a ContactRequest and email the user about it

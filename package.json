@@ -2,7 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --host",
         "build": "vite build"
     },
     "devDependencies": {
@@ -19,6 +19,7 @@
     "dependencies": {
         "qrcode.vue": "^3.4.1",
         "vcards-js": "^2.10.0",
+        "vue3-colorpicker": "^2.2.3",
         "vue3-easy-data-table": "^1.5.47",
         "vue3-toastify": "^0.2.1",
         "vuedraggable": "^4.1.0"

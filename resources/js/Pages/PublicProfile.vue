@@ -4,6 +4,10 @@ import { ref } from 'vue';
 import vCardFactory from 'vcards-js';
 import TextInput from '@/Components/TextInput.vue';
 import {toast} from 'vue3-toastify';
+import { Head } from '@inertiajs/vue3';
+import Checkbox from '@/Components/Checkbox.vue';
+import { usePage } from '@inertiajs/vue3';
+
 
 const props = defineProps({
     user: {
@@ -14,7 +18,10 @@ const props = defineProps({
         type: Array,
         required: true
     }
-})
+});
+
+const page = usePage();
+const isLoggedIn = page.props.auth.user;
 
 const connectFormVisible = ref(false);
 
@@ -46,6 +53,7 @@ const downloadVCF = () => {
     const content = vCard.getFormattedString();
     const file = new Blob([content], { type: 'text/plain' });
     link.href = URL.createObjectURL(file);
+    link.target = "_blank";
     link.download = "sample.vcf";
     link.click();
     URL.revokeObjectURL(link.href);
@@ -59,7 +67,10 @@ const emptyFormData = {
     name: '',
     phone: '',
     email: '',
+    company: '',
+    title: '',
     message: '',
+    terms: false,
     user_id: props.user.id,
 };
 
@@ -93,7 +104,10 @@ const clickTracker = (network) => {
 </script>
 
 <template>
-    <section class="sectionSideBar profile-page" v-bind:style="props.user.banner_picture ? { backgroundImage: 'url(' + props.user.banner_picture + ')' } : {}">
+    <Head :title="user.name" />
+    <a v-if="isLoggedIn" :href="route('dashboard')" class="profile-top-nav">Dashboard</a>
+    <a :href="route('login')" v-else class="profile-top-nav">Login</a>
+    <section class="sectionSideBar profile-page">
         <Show :user="props.user" :networks="props.networks" :downloadContact="downloadVCF" :connectFormToggle="toggleConnectForm" :clickTracker="clickTracker"/>
     </section>
 
@@ -110,11 +124,17 @@ const clickTracker = (network) => {
 
                         <TextInput label="Email" :class="'full-row'" v-model:modelValue="formData.email" :error="formErrors.email?.pop()"/>
 
+                        <TextInput label="Company" :class="'full-row'" v-model:modelValue="formData.company" :error="formErrors.company?.pop()"/>
+
+                        <TextInput label="Title" :class="'full-row'" v-model:modelValue="formData.title" :error="formErrors.title?.pop()"/>
+
                         <TextInput label="Message" :type="'textarea'" :class="'full-row'" v-model:modelValue="formData.message" :error="formErrors.message?.pop()"/>
+
+                        <Checkbox :checked="false" label="I agree to the <a href='https://google.com'>terms and conditions</a>" :class="'full-row'" v-model:modelValue="formData.terms" :error="formErrors.terms?.pop()"/>
                         
                     </div><!--- Form Container  End --> 
                 </div><!--- Form wrapper End --> 
-
+                <br>
                 <div class="form-submit">
                     <input class="site-btn dark-btn submit" type="submit" value="Lets Connect">
                 </div>
