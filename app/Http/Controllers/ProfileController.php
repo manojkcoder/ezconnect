@@ -212,7 +212,7 @@ class ProfileController extends Controller
         $contactRequest->save();
 
         $user = \App\Models\User::find($request->user_id);
-        // event(new \App\Events\ContactRequestReceived($user, $contactRequest));
+        event(new \App\Events\ContactRequestReceived($user, $contactRequest));
 
         return $request->wantsJson()
                     ? new HttpResponse(['message' => 'Request Sent Successfully', 'success' => true], 200)

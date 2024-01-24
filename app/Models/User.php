@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\WelcomeEmailNotification;
+use App\Notifications\ContactRequestNotification;
 
 class User extends Authenticatable
 {
@@ -82,5 +84,26 @@ class User extends Authenticatable
     public function contactRequests()
     {
         return $this->hasMany(ContactRequest::class);
+    }
+
+
+    /**
+     * Send the welcome email notification.
+     *
+     * @return void
+     */
+    public function sendWelcomeEmailNotification($token)
+    {
+        $this->notify(new WelcomeEmailNotification($token));
+    }
+
+    /**
+     * Send the contact request notification.
+     *
+     * @return void
+     */
+    public function sendContactRequestNotification($contactRequest)
+    {
+        $this->notify(new ContactRequestNotification($contactRequest));
     }
 }
