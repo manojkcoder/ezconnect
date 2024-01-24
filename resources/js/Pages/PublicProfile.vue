@@ -101,6 +101,11 @@ const clickTracker = (network) => {
         console.log(error);
     });
 }
+
+const handleTerms = (value) => {
+    formData.value.terms = value;
+}   
+
 </script>
 
 <template>
@@ -130,7 +135,7 @@ const clickTracker = (network) => {
 
                         <TextInput label="Message" :type="'textarea'" :class="'full-row'" v-model:modelValue="formData.message" :error="formErrors.message?.pop()"/>
 
-                        <Checkbox :checked="false" label="I agree to the <a href='https://google.com'>terms and conditions</a>" :class="'full-row'" v-model:modelValue="formData.terms" :error="formErrors.terms?.pop()"/>
+                        <Checkbox :checked="false" label="I agree to the <a href='https://google.com'>terms and conditions</a>" :class="'full-row'" v-model:modelValue="formData.terms" :error="formErrors.terms?.pop()" v-on:update:checked="handleTerms" />
                         
                     </div><!--- Form Container  End --> 
                 </div><!--- Form wrapper End --> 

@@ -54,9 +54,9 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
         Route::get('/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
         Route::post('/change-password', [ProfileController::class, 'storeChangePassword'])->name('profile.change-password.store');
         Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
-        Route::post('/upload-photo', [ProfileController::class, 'uploadPhoto'])->name('profile.upload-photo');
+        Route::post('/upload-asset', [ProfileController::class, 'uploadAsset'])->name('profile.upload-asset');
         Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
-        Route::delete('/delete-banner', [ProfileController::class, 'deleteBanner'])->name('profile.delete-banner');
+        Route::delete('/delete-asset/{type}', [ProfileController::class, 'deleteAsset'])->name('profile.delete-asset');
     });
 
     // Contact Requests...

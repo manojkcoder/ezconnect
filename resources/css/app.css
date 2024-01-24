@@ -53,6 +53,18 @@ div.mb-0 {
     margin-bottom: 0
 }
 
+.mb-20{
+    margin-bottom: 20px;
+}
+
+.mt-5{
+    margin-top: 5px;
+}
+
+.mt-10{
+    margin-top: 10px;
+}
+
 .container,
 nav ul {
     display: flex;
@@ -141,10 +153,18 @@ header .container {
 }
 
 .img-wrapper {
-    border-radius: 100%;
     overflow: hidden;
     display: block;
     max-width: 143px
+}
+
+button.delete-photo-btn {
+    position: absolute;
+    right: 5px;
+    background: white;
+    border-radius: 50%;
+    top: 5px;
+    z-index: 9;
 }
 
 .img-wrapper img {
@@ -262,6 +282,7 @@ main.content {
     width: 180px;
     height: 180px;
     min-width:180px;
+    border-radius: 50%;
 }
 
 .ss-inner {
@@ -333,7 +354,8 @@ button.blocked i {
 }
 
 .profile-wrapper .img-wrapper {
-    justify-content: center
+    justify-content: center;
+    position: relative;
 }
 
 span.img-wrapper>div {
@@ -351,10 +373,8 @@ span.img-wrapper>div {
 }
 
 .profile-wrapper .img-wrapper {
-    background: #F8EDFF;
     max-width: 120px;
     height: 120px;
-    border: 1px solid var(--light-blue);
     flex: 1
 }
 
@@ -400,6 +420,10 @@ section.section.contactRequestSection {
 
 .form-wrapper .container {
     gap: 20px
+}
+
+.profile-popup .form-wrapper .container {
+    gap: 8px;
 }
 
 .form-control {
@@ -1080,7 +1104,8 @@ a.custom-color:hover {
 .customize-popup-container {
     display: flex;
     flex-direction: column;
-    gap: 25px
+    gap: 25px;
+    width: 100%;
 }
 
 a.setting-btn.active {
@@ -1591,6 +1616,7 @@ a.loged-in.icon img {
     overflow: auto;
     height: max-content;
     position: relative;
+    max-height: 100%;
 }
 
 .profile-popup .profile-wrapper,
@@ -1793,6 +1819,11 @@ select option:empty {
 .section.contactRequestSection th:last-child {
     width: 220px;
 }
+a.swatch {
+    width: 50px;
+    height: 25px;
+    border: 1px solid #CCC;
+}
 @media (min-width:1921px) {
     .sectionSideBar.profile-page {
         padding: 180px 15px;
@@ -1807,12 +1838,6 @@ select option:empty {
 
     .profileSection.section>.container {
         gap: 40px
-    }
-
-    .profile-wrapper .img-wrapper {
-        max-width: 90px;
-        height: 90px;
-        flex: unset
     }
 
     .profile-wrapper,
@@ -2452,8 +2477,8 @@ ul.pagination {
     }
 
     .profile-wrapper .img-wrapper {
-        max-width: 45px;
-        height: 45px
+        max-width: 85px;
+        height: 85px
     }
 
     .profile-picture,
@@ -2465,12 +2490,6 @@ ul.pagination {
         font-size: 13px;
         line-height: normal;
         margin-bottom: 4px
-    }
-
-    .upload-field .site-btn {
-        margin: 0 auto;
-        font-size: 11px;
-        padding: 7px 10px
     }
 
     .profile-wrapper .upload-field {

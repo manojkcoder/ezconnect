@@ -9,6 +9,7 @@ import TextInput from '@/Components/TextInput.vue';
 import Show from './Show.vue';
 import { ColorPicker } from "vue3-colorpicker";
 import "vue3-colorpicker/style.css";
+import 'vanilla-colorful';
 
 const props = defineProps({
     user: {
@@ -72,7 +73,7 @@ const profile_picture = ref(null);
 const banner_picture = ref(null);
 const logo = ref(null);
 
-const uploadPhoto = async (field) => {
+const uploadAsset = async (field) => {
     let file;
     switch (field) {
         case 'profile_picture':
@@ -90,7 +91,7 @@ const uploadPhoto = async (field) => {
     const uploadFormData = new FormData();
     uploadFormData.append(field, file);
     try {
-        const response = await axios.post(route('profile.upload-photo'), uploadFormData);
+        const response = await axios.post(route('profile.upload-asset'), uploadFormData);
         formData.value[field] = response.data.url;
         toast.success(response.data.message, { timeout: 3000, position: 'bottom-right', closeOnClick: true });
     } catch (error) {
@@ -138,10 +139,23 @@ const hasEmptyNetworks = () => {
     return formData.value.social_networks.find(network => network.social_network_id == '' || network.name == '' || network.url == '');
 };
 
-const deleteBanner = async () => {
+const deleteAsset = async (type) => {
     try {
-        const response = await axios.delete(route('profile.delete-banner'));
-        formData.value.banner_picture = null;
+        const response = await axios.delete(route('profile.delete-asset', type));
+        formData.value[type] = null;
+        toast.success(response.data.message, { timeout: 3000, position: 'bottom-right', closeOnClick: true });
+    } catch (error) {
+        console.error(error); // Handle error response
+    }
+};
+
+const uploadFile = async (event, element, index) => {
+    let file = event.target.files[0];
+    const uploadFormData = new FormData();
+    uploadFormData.append('file', file);
+    try {
+        const response = await axios.post(route('profile.upload-asset'), uploadFormData);
+        formData.value.social_networks[index]['url'] = response.data.url;
         toast.success(response.data.message, { timeout: 3000, position: 'bottom-right', closeOnClick: true });
     } catch (error) {
         console.error(error); // Handle error response
@@ -153,7 +167,7 @@ const uploadIcon = async (event, element, index) => {
     const uploadFormData = new FormData();
     uploadFormData.append('icon', file);
     try {
-        const response = await axios.post(route('profile.upload-photo'), uploadFormData);
+        const response = await axios.post(route('profile.upload-asset'), uploadFormData);
         formData.value.social_networks[index]['custom_icon_url'] = response.data.url;
         toast.success(response.data.message, { timeout: 3000, position: 'bottom-right', closeOnClick: true });
     } catch (error) {
@@ -162,6 +176,16 @@ const uploadIcon = async (event, element, index) => {
 };
 
 const customizePanel = ref(false);
+
+const handleColorChanged = (event, field) => {
+    formData.value.customization[field] = event.target.color;
+};
+
+const showPicker = (field) => {
+    pickerShown.value == field ? pickerShown.value = null : pickerShown.value = field;
+};
+const pickerShown = ref(null);
+
 </script>
 
 <template>
@@ -177,26 +201,30 @@ const customizePanel = ref(false);
                         <div class="profile-wrapper">
                             <div class="profile-picture">
                                 <span class="img-wrapper">
+                                    <button class="delete-photo-btn" type="button" v-if="formData.profile_picture" @click="deleteAsset('profile_picture')"><i class="icon-delete-icon"></i></button>
                                     <img v-if="formData.profile_picture" :src="formData.profile_picture" alt="Jane cooper">  
+                                    <div class="empty-photo" v-else></div>
                                 </span>
                                 <span class="upload-field">
                                     <label class="upload-field-label">
                                         <h4>Profile Photo</h4>
                                         <span class="site-btn dark-btn">Upload Photo</span>
                                     </label>
-                                    <input type="file" id="profile-picture" ref="profile_picture" @change="uploadPhoto('profile_picture')">
+                                    <input type="file" id="profile-picture" ref="profile_picture" @change="uploadAsset('profile_picture')">
                                 </span>
                             </div>
                             <div class="profile-logo">
                                 <span class="img-wrapper">
-                                    <img :src="formData.logo" alt="FinovateFall">
+                                    <button class="delete-photo-btn" type="button" v-if="formData.logo" @click="deleteAsset('logo')"><i class="icon-delete-icon"></i></button>
+                                    <img v-if="formData.logo" :src="formData.logo" alt="FinovateFall">
+                                    <div class="empty-photo" v-else></div>
                                 </span>
                                 <span class="upload-field">
                                     <label class="upload-field-label">
                                         <h4>Logo</h4>
                                         <span class="site-btn dark-btn">Upload Logo</span>
                                     </label>
-                                    <input type="file" id="company-logo" ref="logo" @change="uploadPhoto('logo')">
+                                    <input type="file" id="company-logo" ref="logo" @change="uploadAsset('logo')">
                                 </span>
                             </div>
                         </div>
@@ -215,14 +243,14 @@ const customizePanel = ref(false);
                                 <div class="field">
                                     <label>Upload Banner Picture</label>
                                     <div class="banner-upload-field">
-                                        <input type="file" class="form-control" ref="banner_picture" @change="uploadPhoto('banner_picture')">
+                                        <input type="file" class="form-control" ref="banner_picture" @change="uploadAsset('banner_picture')">
                                         <span class="banner-upload-label">
                                             <span class="site-btn dark-btn"> Choose Image</span>
                                             <span>Upload Image</span>
                                         </span>
                                     </div>
                                     <div class="banner-preview" v-if="formData.banner_picture">
-                                        <a @click.prevent="deleteBanner"><i class="icon-delete-icon"></i></a>
+                                        <a @click.prevent="deleteAsset('banner_picture')"><i class="icon-delete-icon"></i></a>
                                         <img :src="formData.banner_picture" alt="">
                                     </div>
                                     
@@ -255,7 +283,14 @@ const customizePanel = ref(false);
                                                     <input type="file" :id="'upload_icon_'+index" style="display: none;" @change="(event) => uploadIcon(event, this, index)">
                                                     <span class="icon svg-icon" :class="element.social_network.icon" v-if="element.social_network.icon !== 'custom'"></span>
                                                 </div>
-                                                <TextInput :placeholder="'Enter the '+element.social_network.type+' here'" label="" :type="'text'" name="url" v-model="element.url" :error="getError(index, 'url')" required />
+                                                <TextInput :placeholder="'Enter the '+element.social_network.type+' here'" label="" :type="'text'" name="url" v-model="element.url" :error="getError(index, 'url')" required v-if="element.name !== 'File'"/>
+                                                <div v-else class="field full-field" style="flex-direction: row;">
+                                                    <input type="file" style="display: none;" :id="'file_'+index" @change="(event) => uploadFile(event, this, index)">
+                                                    <label type="button" class="site-btn text-center" :for="'file_'+index"><i class="icon-upload-icon"></i></label>
+                                                    <a :href="element.url" v-if="element.url" target="_blank" class="site-btn site-btn-dark"><i class="icon-link"></i></a>
+                                                </div>
+                                                
+
                                                 <TextInput :placeholder="'Enter the name here'" label="" :type="'text'" name="name" v-model="element.name" :error="getError(index, 'name')" required />
 
                                             </div>
@@ -296,82 +331,145 @@ const customizePanel = ref(false);
                 <h2 class="text-center">Template Customizer</h2>
                 <table>
                     <!--- Banner  Colors -->
+
                     <tr>
-                        <td>Edit profile picture ring colour</td>
+                        <td>Profile background color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.profile_picture_ring_color" format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.profile_background_color}" @click.prevent="showPicker('profile_background_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'profile_background_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.profile_background_color" @color-changed="(event) => handleColorChanged(event, 'profile_background_color')"></hex-color-picker>
                         </td>
                     </tr>
 
-                    <!---  Profile Text  Colors-->
                     <tr>
-                        <td>Profile Text Colour</td>
+                        <td>Profile picture ring color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.profile_text_color"  format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.profile_picture_ring_color}" @click.prevent="showPicker('profile_picture_ring_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'profile_picture_ring_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.profile_picture_ring_color" @color-changed="(event) => handleColorChanged(event, 'profile_picture_ring_color')"></hex-color-picker>
                         </td>
                     </tr>
 
-                    <!---  Profile Buttons  Colors-->
                     <tr>
-                        <td>Profile Buttons Colour</td>
+                        <td>Text color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.profile_buttons_color"  format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.profile_text_color}" @click.prevent="showPicker('profile_text_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'profile_text_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.profile_text_color" @color-changed="(event) => handleColorChanged(event, 'profile_text_color')"></hex-color-picker>
                         </td>
                     </tr>
 
-                    <!---  Profile Buttons Text  Colors-->
+
                     <tr>
-                        <td>Profile Buttons Text Colour</td>
+                        <td colspan="2"><h3 class="mb-0 mt-10">Primary button</h3></td>
+                    </tr>
+                    <!--- Buttons  Colors -->
+                    <tr>
+                        <td>Background color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.profile_buttons_text_color"  format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.profile_buttons_color}" @click.prevent="showPicker('profile_buttons_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'profile_buttons_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.profile_buttons_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_color')"></hex-color-picker>
                         </td>
                     </tr>
 
-                    <!---  Profile Buttons Hover  Colors-->
                     <tr>
-                        <td>Profile Buttons Hover Colour</td>
+                        <td>Text color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.profile_buttons_hover_color"  format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.profile_buttons_text_color}" @click.prevent="showPicker('profile_buttons_text_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'profile_buttons_text_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.profile_buttons_text_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_text_color')"></hex-color-picker>
                         </td>
                     </tr>
 
-                    <!---  Profile Buttons Hover Text  Colors-->
                     <tr>
-                        <td>Profile Buttons Hover Text Colour</td>
+                        <td>Hover background color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.profile_buttons_hover_text_color"  format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.profile_buttons_hover_color}" @click.prevent="showPicker('profile_buttons_hover_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'profile_buttons_hover_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.profile_buttons_hover_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_hover_color')"></hex-color-picker>
                         </td>
                     </tr>
 
-                    <!---  Connect Button  Colors-->
                     <tr>
-                        <td>Connect Button Colour</td>
+                        <td>Hover text color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.connect_button_color"  format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.profile_buttons_hover_text_color}" @click.prevent="showPicker('profile_buttons_hover_text_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'profile_buttons_hover_text_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.profile_buttons_hover_text_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_hover_text_color')"></hex-color-picker>
                         </td>
                     </tr>
 
-                    <!---  Connect Button Text  Colors-->
+
                     <tr>
-                        <td>Connect Button Text Colour</td>
+                        <td colspan="2"><h3 class="mb-0 mt-10">Secondary button</h3></td>
+                    </tr>
+                    <tr>
+                        <td>Background color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.connect_button_text_color" format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.connect_button_color}" @click.prevent="showPicker('connect_button_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'connect_button_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.connect_button_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_color')"></hex-color-picker>
                         </td>
                     </tr>
 
-                    <!---  Connect Button Hover  Colors-->
                     <tr>
-                        <td>Connect Button Hover Colour</td>
+                        <td>Text color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.connect_button_hover_color"  format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.connect_button_text_color}" @click.prevent="showPicker('connect_button_text_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'connect_button_text_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.connect_button_text_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_text_color')"></hex-color-picker>
                         </td>
                     </tr>
 
-                    <!---  Connect Button Hover Text  Colors-->
                     <tr>
-                        <td>Connect Button Hover Text Colour</td>
+                        <td>Hover background color</td>
                         <td class="switcher-style-list">
-                            <color-picker v-model:pureColor="formData.customization.connect_button_hover_text_color"  format="hex" picker-type="chrome"/>
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.connect_button_hover_color}" @click.prevent="showPicker('connect_button_hover_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'connect_button_hover_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.connect_button_hover_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_hover_color')"></hex-color-picker>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Hover text color</td>
+                        <td class="switcher-style-list">
+                            <a class="swatch" v-bind:style="{backgroundColor: formData.customization.connect_button_hover_text_color}" @click.prevent="showPicker('connect_button_hover_text_color')"></a>
+                        </td>
+                    </tr>
+                    <tr v-show="pickerShown == 'connect_button_hover_text_color'" class="mb-20">
+                        <td colspan="2">
+                            <hex-color-picker :color="formData.customization.connect_button_hover_text_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_hover_text_color')"></hex-color-picker>
                         </td>
                     </tr>
                 </table>

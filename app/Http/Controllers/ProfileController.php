@@ -41,7 +41,7 @@ class ProfileController extends Controller
     /**
      * Update the user's photos.
      */
-    public function uploadPhoto(Request $request): HttpResponse
+    public function uploadAsset(Request $request): HttpResponse
     {
         $user = $request->user();
 
@@ -50,6 +50,7 @@ class ProfileController extends Controller
             'profile_picture' => ['nullable', 'image', 'max:16384'],
             'logo' => ['nullable', 'image', 'max:16384'],
             'icon' => ['nullable', 'image', 'max:2048'],
+            'file' => ['nullable', 'file', 'max:16384', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip'],
         ]);
         
         if ($request->hasFile('banner_picture')) {
@@ -63,6 +64,8 @@ class ProfileController extends Controller
             $url = $user->logo;
         } elseif ($request->hasFile('icon')) {
             $url = Storage::url($request->file('icon')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'icons'));
+        } elseif ($request->hasFile('file')) {
+            $url = Storage::url($request->file('file')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'files'));
         }
 
         $user->save();
@@ -167,14 +170,26 @@ class ProfileController extends Controller
         return Inertia::render('PublicProfile', compact('user', 'networks'));
     }
 
-    public function deleteBanner(Request $request){
+    public function deleteAsset($type, Request $request){
         $user = $request->user();
-        Storage::delete($user->banner_picture);
-        $user->banner_picture = null;
+        switch($type){
+            case 'profile_picture':
+                Storage::delete($user->profile_picture);
+                $user->profile_picture = null;
+                break;
+            case 'logo':
+                Storage::delete($user->logo);
+                $user->logo = null;
+                break;
+            case 'banner_picture':
+                Storage::delete($user->banner_picture);
+                $user->banner_picture = null;
+                break;
+        }
         $user->save();
 
         return $request->wantsJson()
-                    ? new HttpResponse(['message' => 'Banner Deleted Successfully'], 200)
+                    ? new HttpResponse(['message' => ucwords(str_replace('_', ' ',$type)).' Deleted Successfully'], 200)
                     : back()->with('status', 'banner-deleted');
     }
 

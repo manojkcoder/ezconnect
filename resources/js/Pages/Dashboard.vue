@@ -91,7 +91,7 @@ function init(el, binding) {
 
                             <div class="performace-icons">
                                 <span style="display: flex;column-gap: 8px;"><img src="../../images/icons/view-gray-icon.svg">Views</span>
-                                <span style="display: flex;" v-tooltip:bottom.tooltip="'Profile Visits in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
+                                <span style="display: flex;" v-tooltip:left.tooltip="'Profile Visits in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
                             </div>
                         </div>
                         <!-- Card 2-->
@@ -109,7 +109,7 @@ function init(el, binding) {
 
                             <div class="performace-icons">
                                 <span style="display: flex;column-gap: 8px;"><img src="../../images/icons/tap-links-icon.svg">Link Taps</span>
-                                <span style="display: flex;" v-tooltip:bottom.tooltip="'Social Links tapped in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
+                                <span style="display: flex;" v-tooltip:left.tooltip="'Social Links tapped in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
                             </div>
                         </div>
 
@@ -121,7 +121,7 @@ function init(el, binding) {
 
                             <div class="performace-icons">
                                 <span style="display: flex;column-gap: 8px;"><img src="../../images/icons/rate-icon.svg">Tap through rate</span>
-                                <span style="display: flex;" v-tooltip:bottom.tooltip="'No of profile visits leading to link clicks.'"><img src="../../images/icons/info-icon.svg"></span>
+                                <span style="display: flex;" v-tooltip:left.tooltip="'No. of profile visits leading to link clicks.'"><img src="../../images/icons/info-icon.svg"></span>
                             </div>
                         </div>
                     </div>
@@ -130,7 +130,7 @@ function init(el, binding) {
                     <section class="section contactRequestSection">
                         <div class="container">
                             <div class="table-container">
-                                <table>
+                                <table style="width: 100%;">
                                     <thead>
                                         <tr>
                                             <th>Name</th>

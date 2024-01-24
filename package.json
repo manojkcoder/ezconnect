@@ -17,7 +17,9 @@
         "vue": "^3.2.41"
     },
     "dependencies": {
+        "@aesoper/normal-utils": "^0.1.5",
         "qrcode.vue": "^3.4.1",
+        "vanilla-colorful": "^0.7.2",
         "vcards-js": "^2.10.0",
         "vue3-colorpicker": "^2.2.3",
         "vue3-easy-data-table": "^1.5.47",

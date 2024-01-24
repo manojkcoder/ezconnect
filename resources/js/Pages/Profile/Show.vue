@@ -48,8 +48,6 @@ const customization = ref(typeof props.user.customization == 'string' ? JSON.par
 
         <a href="#" @click.prevent="downloadContact" class="site-btn dark-btn">Save my contact card</a>
         <a href="#" class="site-btn" @click="connectFormToggle">Connect with me</a>
-
-        <h3>______________</h3>
         <br>
         <div class="flex-row social-media">
             <a class="" :href="network.social_network.format.replace('{value}', network.url)" v-for="(network, index) in user.social_networks" target="_blank" v-on:click="clickTracker(network.id)">
@@ -61,7 +59,7 @@ const customization = ref(typeof props.user.customization == 'string' ? JSON.par
 </template>
 
 <style>
-.sectionSideBar.profile-page *{
+.sectionSideBar .ss-inner *{
     color: v-bind(customization.profile_text_color) !important;
 }
 .img-wrapper.profile-pic{
