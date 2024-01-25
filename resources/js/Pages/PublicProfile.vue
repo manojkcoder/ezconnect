@@ -24,6 +24,7 @@ const page = usePage();
 const isLoggedIn = page.props.auth.user;
 
 const connectFormVisible = ref(false);
+const csrf = ref(document.head.querySelector('meta[name="csrf-token"]') ? document.head.querySelector('meta[name="csrf-token"]').content : '');
 
 const downloadVCF = () => {
 
@@ -48,15 +49,8 @@ const downloadVCF = () => {
     }, {});
     vCard.title = props.user.title;
     vCard.note = props.user.bio;
-    
-    const link = document.createElement("a");
-    const content = vCard.getFormattedString();
-    const file = new Blob([content], { type: 'text/plain' });
-    link.href = URL.createObjectURL(file);
-    link.target = "_blank";
-    link.download = "sample.vcf";
-    link.click();
-    URL.revokeObjectURL(link.href);
+    vcfData.value = vCard.getFormattedString();
+    vcfDownloadForm.value.submit();
 }
 
 const toggleConnectForm = () => {
@@ -105,6 +99,8 @@ const clickTracker = (network) => {
 const handleTerms = (value) => {
     formData.value.terms = value;
 }   
+const vcfData = ref('');
+const vcfDownloadForm = ref(null);
 
 </script>
 
@@ -119,6 +115,10 @@ const handleTerms = (value) => {
     <div class="popup-wrapper profile-popup" v-show="connectFormVisible">
         <div class="container"> 
             <a class="close-btn" @click.prevent="toggleConnectForm"><i class="icon-close-icon"></i></a>
+            <form method="post" :action="route('download_contact', props.user.id)" ref="vcfDownloadForm" target="_blank">
+                <input type="hidden" name="_token" :value="csrf">
+                <input type="hidden" name="vcfData" v-model="vcfData">
+            </form>
             <form class="section-main" @submit.prevent="sendConnectRequest">
                 <div class="form-wrapper">
                     <div class="container">

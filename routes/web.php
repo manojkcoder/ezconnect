@@ -30,13 +30,14 @@ Route::get('/', function () {
 
 Route::get('profile/{username}', [ProfileController::class, 'publicProfile'])->name('public_profile');
 Route::get('profile/id/{id}', [ProfileController::class, 'publicProfileId'])->name('public_profile_id');
+Route::post('profile/{id}/download-contact', [ProfileController::class, 'downloadContact'])->name('download_contact');
 Route::post('connectRequest', [ProfileController::class, 'connectRequest'])->name('connect_request');
 Route::post('clickTracker/{network}', [ProfileController::class, 'clickTracker'])->name('click_tracker');
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/users/add', [AdminDashboardController::class, 'addUser'])->name('users.create');
-    Route::put('/users/toggleBlockStatus/{id}', [AdminDashboardController::class, 'toggleBlockStatus'])->name('users.toggle-block-status');
+    Route::put('/users/toggle-block-status/{id}', [AdminDashboardController::class, 'toggleBlockStatus'])->name('users.toggle-block-status');
     Route::post('/users', [AdminDashboardController::class, 'storeUser'])->name('users.store');
     Route::delete('/users/{id}', [AdminDashboardController::class, 'destroyUser'])->name('users.destroy');
     Route::patch('/users/{id}', [AdminDashboardController::class, 'updateUser'])->name('users.update');
