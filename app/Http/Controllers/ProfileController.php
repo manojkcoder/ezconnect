@@ -247,25 +247,8 @@ class ProfileController extends Controller
     public function downloadContact($id, Request $request){
         // Respond with vcf header and content
         $user = \App\Models\User::find($id);
-        return response()->streamDownload(function () use ($user) {
-            echo 'BEGIN:VCARD
-            VERSION:3.0
-            REV:2024-01-23T17:12:36Z
-            ORG;CHARSET=utf-8:Ezconnect
-            N;CHARSET=utf-8:Hautala;Alexandra;;;
-            FN;CHARSET=utf-8:Alexandra Hautala
-            TEL;HOME:+358451544538
-            TEL;WORK:
-            TEL;MOBILE:
-            URL:https://account.tapitag.co/130920231147MS
-            URL:Ezconnect.fi
-            URL:
-            EMAIL;INTERNET:Alexandra.hautala@outlook.com
-            TITLE;CHARSET=utf-8:CEO
-            ADR;WORK;POSTAL;CHARSET=utf-8:Everstinkuja 5, 02600 espoo;;;;;;
-            URL;TYPE=Linkedin:https://www.linkedin.com/in/alexandra-hautala-89942b1a6
-            END:VCARD
-            ';
+        return response()->header('Content-Type', 'text/x-vcard')->streamDownload(function () use ($user) {
+            echo $request->vcfData;
         }, $user->name.'.vcf');
 
     }
