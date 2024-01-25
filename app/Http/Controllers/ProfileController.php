@@ -247,9 +247,12 @@ class ProfileController extends Controller
     public function downloadContact($id, Request $request){
         // Respond with vcf header and content
         $user = \App\Models\User::find($id);
-        return response()->header('Content-Type', 'text/x-vcard')->streamDownload(function () use ($user) {
-            echo $request->vcfData;
-        }, $user->name.'.vcf');
+        $data = $request->vcfData;
+        return response($data)->withHeaders([
+            'Content-Type'=> 'text/x-vcard',
+            'Content-Disposition' => 'inline; filename="'.$user->name.'.vcf"',
+            'Content-Length' => strlen($data),
+        ]);
 
     }
 

@@ -115,9 +115,9 @@ const vcfDownloadForm = ref(null);
     <div class="popup-wrapper profile-popup" v-show="connectFormVisible">
         <div class="container"> 
             <a class="close-btn" @click.prevent="toggleConnectForm"><i class="icon-close-icon"></i></a>
-            <form method="post" :action="route('download_contact', props.user.id)" ref="vcfDownloadForm" target="_blank">
+            <form method="post" :action="route('download_contact', props.user.id)" ref="vcfDownloadForm">
                 <input type="hidden" name="_token" :value="csrf">
-                <input type="hidden" name="vcfData" v-model="vcfData">
+                <input type="hidden" name="vcfData" ref="vcfData">
             </form>
             <form class="section-main" @submit.prevent="sendConnectRequest">
                 <div class="form-wrapper">
