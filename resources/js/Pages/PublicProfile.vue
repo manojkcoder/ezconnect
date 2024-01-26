@@ -24,7 +24,6 @@ const page = usePage();
 const isLoggedIn = page.props.auth.user;
 
 const connectFormVisible = ref(false);
-const csrf = ref(document.head.querySelector('meta[name="csrf-token"]') ? document.head.querySelector('meta[name="csrf-token"]').content : '');
 
 const downloadVCF = () => {
 
@@ -33,24 +32,37 @@ const downloadVCF = () => {
     vCard.firstName = props.user.name.split(' ')[0];
     vCard.lastName = props.user.name.indexOf(' ') > -1 ? props.user.name.split(' ').splice(1).join(' ') : '';
     vCard.organization = props.user.company_name;
-    if(props.user.profile_picture){
-        vCard.photo.attachFromUrl(route('home')+(props.user.profile_picture), props.user.profile_picture.split('.').pop().toUpperCase());
+    if(props.user.profile_picture_base64){
+        // convert the image to base 64
+        vCard.photo.embedFromString(props.user.profile_picture_base64, props.user.logo.split('.').pop().toUpperCase());
     }
-    if(props.user.logo){
-        vCard.logo.attachFromUrl(route('home')+(props.user.logo), props.user.logo.split('.').pop().toUpperCase());
+    if(props.user.logo_base64){
+        // convert the image to base 64
+        vCard.logo.embedFromString(props.user.logo_base64, props.user.logo.split('.').pop().toUpperCase());
     }
-    
     vCard.email = props.user.email;
     vCard.otherPhone = props.user.social_networks.filter(network => network.social_network.type == 'phone').map(network => network.url);
     vCard.email = props.user.social_networks.filter(network => network.social_network.type == 'email').map(network => network.url);
     vCard.socialUrls = props.user.social_networks.filter(network => network.social_network.type == 'url').reduce((acc, network) => {
-        acc[network.social_network.name] = network.url;
+        let url = network.social_network.format.replace('{value}', network.url);
+        acc[network.name.replace(/ /g, '_')] = network.social_network.key == 'file' ? route('home') + url : url;
         return acc;
     }, {});
     vCard.title = props.user.title;
     vCard.note = props.user.bio;
-    vcfData.value = vCard.getFormattedString();
-    vcfDownloadForm.value.submit();
+    vCard.url = route('public_profile_id', props.user.id);
+
+    const data = vCard.getFormattedString().replace(/X-SOCIALPROFILE;CHARSET=UTF-8;/g, 'X-SOCIALPROFILE;');
+    // console.log(data);
+    // return;
+    const blob = new Blob([data], {type: "text/vcard;charset=utf-8"});
+    const url = window.URL || window.webkitURL;
+    const downloadLink = url.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = downloadLink;
+    a.download = props.user.name.split(' ')[0]+'.vcf';
+    document.body.appendChild(a);
+    a.click();
 }
 
 const toggleConnectForm = () => {
@@ -99,8 +111,6 @@ const clickTracker = (network) => {
 const handleTerms = (value) => {
     formData.value.terms = value;
 }   
-const vcfData = ref('');
-const vcfDownloadForm = ref(null);
 
 </script>
 
@@ -115,10 +125,6 @@ const vcfDownloadForm = ref(null);
     <div class="popup-wrapper profile-popup" v-show="connectFormVisible">
         <div class="container"> 
             <a class="close-btn" @click.prevent="toggleConnectForm"><i class="icon-close-icon"></i></a>
-            <form method="post" :action="route('download_contact', props.user.id)" ref="vcfDownloadForm">
-                <input type="hidden" name="_token" :value="csrf">
-                <input type="hidden" name="vcfData" ref="vcfData">
-            </form>
             <form class="section-main" @submit.prevent="sendConnectRequest">
                 <div class="form-wrapper">
                     <div class="container">

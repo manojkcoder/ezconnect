@@ -12,6 +12,8 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProfileController extends Controller
 {
@@ -57,10 +59,18 @@ class ProfileController extends Controller
             $user->banner_picture = Storage::url($request->file('banner_picture')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'banners'));
             $url = $user->banner_picture;
         } elseif ($request->hasFile('profile_picture')) {
+            $manager = new ImageManager(Driver::class);
+            $scaled_image = $manager->read($request->file('profile_picture'));
+            $scaled_image->cover(400, 400);
             $user->profile_picture = Storage::url($request->file('profile_picture')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'profile_pictures'));
+            $scaled_image->save(storage_path().'/app'.str_replace('storage', 'public', $this->getResizedFileName($user->profile_picture)));
             $url = $user->profile_picture;
         } elseif ($request->hasFile('logo')) {
+            $manager = new ImageManager(Driver::class);
+            $scaled_image = $manager->read($request->file('logo'));
+            $scaled_image->resize(400, 400);
             $user->logo = Storage::url($request->file('logo')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'logos'));
+            $scaled_image->save(storage_path().'/app'.str_replace('storage', 'public', $this->getResizedFileName($user->logo)));
             $url = $user->logo;
         } elseif ($request->hasFile('icon')) {
             $url = Storage::url($request->file('icon')->store('public'.DIRECTORY_SEPARATOR.$user->id.DIRECTORY_SEPARATOR.'icons'));
@@ -73,6 +83,10 @@ class ProfileController extends Controller
         return $request->wantsJson()
                     ? new HttpResponse(['message' => 'Photo Uploaded Successfully', 'url' => $url], 200)
                     : back()->with('status', 'profile-photo-updated');
+    }
+
+    public function getResizedFileName($path){
+        return strrev(str_replace('.', '.004_', strrev($path)));
     }
 
     /**
@@ -152,18 +166,27 @@ class ProfileController extends Controller
 
     public function publicProfile($username){
         $user = \App\Models\User::where('username', $username)->with('socialNetworks.socialNetwork')->firstOrFail();
-        $networks = \App\Models\SocialNetwork::all();
-        event(new \App\Events\ProfileVisited($user->id));
-        return Inertia::render('PublicProfile', compact('user', 'networks'));
+        return $this->renderProfileView($user);
     }
 
     public function publicProfileId($id){
-        $user = \App\Models\User::find($id);
+        return $user = \App\Models\User::find($id);
         if(!$user){
             return redirect()->route('home');
         }
         if($user->username){
             return redirect()->route('public_profile', $user->username);
+        }
+        return $this->renderProfileView($user);
+    }
+
+    public function renderProfileView($user){
+
+        if($user->profile_picture){
+            $user->profile_picture_base64 = base64_encode(Storage::get(str_replace('storage', 'public', $this->getResizedFilename($user->profile_picture))));
+        }
+        if($user->logo){
+            $user->logo_base64 = base64_encode(Storage::get(str_replace('storage', 'public', $this->getResizedFilename($user->logo))));
         }
         event(new \App\Events\ProfileVisited($user->id));
         $networks = \App\Models\SocialNetwork::all();
@@ -174,15 +197,15 @@ class ProfileController extends Controller
         $user = $request->user();
         switch($type){
             case 'profile_picture':
-                Storage::delete($user->profile_picture);
+                Storage::delete(str_replace('storage', 'public', $user->profile_picture));
                 $user->profile_picture = null;
                 break;
             case 'logo':
-                Storage::delete($user->logo);
+                Storage::delete(str_replace('storage', 'public', $user->logo));
                 $user->logo = null;
                 break;
             case 'banner_picture':
-                Storage::delete($user->banner_picture);
+                Storage::delete(str_replace('storage', 'public',$user->banner_picture));
                 $user->banner_picture = null;
                 break;
         }
@@ -242,18 +265,6 @@ class ProfileController extends Controller
         return $request->wantsJson()
                     ? new HttpResponse(['message' => 'Click Tracked Successfully', 'success' => true], 200)
                     : back()->with('status', 'click-tracked');
-    }
-
-    public function downloadContact($id, Request $request){
-        // Respond with vcf header and content
-        $user = \App\Models\User::find($id);
-        $data = $request->vcfData;
-        return response($data)->withHeaders([
-            'Content-Type'=> 'text/x-vcard',
-            'Content-Disposition' => 'inline; filename="'.$user->name.'.vcf"',
-            'Content-Length' => strlen($data),
-        ]);
-
     }
 
 }

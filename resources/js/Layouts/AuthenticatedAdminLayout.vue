@@ -7,7 +7,7 @@ import AdminSidebar from './AdminSidebar.vue';
     <header>
         <div class="container full-container">
             <div class="logo">
-                <h2 class="mb-0">Dashboard</h2>
+                <img src="../../images/logo.png" alt="Logo">
             </div>
             <div class="nav">
                 <nav>
