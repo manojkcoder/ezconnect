@@ -7,7 +7,6 @@ import draggable from 'vuedraggable'
 import { toast } from 'vue3-toastify';
 import TextInput from '@/Components/TextInput.vue';
 import Show from './Show.vue';
-import { ColorPicker } from "vue3-colorpicker";
 import "vue3-colorpicker/style.css";
 import 'vanilla-colorful';
 
@@ -268,7 +267,7 @@ const pickerShown = ref(null);
                             <div class="container">
                                 <h3 class="full-row mb-0">Links</h3>
                                 <!--- Social Media Row 1 -->
-                                <draggable v-model="formData.social_networks" item-key="index">
+                                <draggable v-model="formData.social_networks" item-key="index" handle=".drag">
                                     <template #item="{element, index}">
                                         <div class="social-media-row">
                                             <div class="dragable-row" draggable="true">
@@ -341,6 +340,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'profile_background_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_background_color" @color-changed="(event) => handleColorChanged(event, 'profile_background_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.profile_background_color" @change="handleColorChanged($event, 'profile_background_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -353,6 +353,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'profile_picture_ring_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_picture_ring_color" @color-changed="(event) => handleColorChanged(event, 'profile_picture_ring_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.profile_picture_ring_color" @change="handleColorChanged($event, 'profile_picture_ring_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -365,6 +366,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'profile_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_text_color" @color-changed="(event) => handleColorChanged(event, 'profile_text_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.profile_text_color" @change="handleColorChanged($event, 'profile_text_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -382,6 +384,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'profile_buttons_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_buttons_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.profile_buttons_color" @change="handleColorChanged($event, 'profile_buttons_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -394,6 +397,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'profile_buttons_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_buttons_text_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_text_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.profile_buttons_text_color" @change="handleColorChanged($event, 'profile_buttons_text_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -406,6 +410,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'profile_buttons_hover_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_buttons_hover_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_hover_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.profile_buttons_hover_color" @change="handleColorChanged($event, 'profile_buttons_hover_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -418,6 +423,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'profile_buttons_hover_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_buttons_hover_text_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_hover_text_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.profile_buttons_hover_text_color" @change="handleColorChanged($event, 'profile_buttons_hover_text_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -434,6 +440,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'connect_button_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.connect_button_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.connect_button_color" @change="handleColorChanged($event, 'connect_button_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -446,6 +453,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'connect_button_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.connect_button_text_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_text_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.connect_button_text_color" @change="handleColorChanged($event, 'connect_button_text_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -458,6 +466,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'connect_button_hover_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.connect_button_hover_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_hover_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.connect_button_hover_color" @change="handleColorChanged($event, 'connect_button_hover_color')" class="color-input">
                         </td>
                     </tr>
 
@@ -470,6 +479,7 @@ const pickerShown = ref(null);
                     <tr v-show="pickerShown == 'connect_button_hover_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.connect_button_hover_text_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_hover_text_color')"></hex-color-picker>
+                            <input type="text" v-model="formData.customization.connect_button_hover_text_color" @change="handleColorChanged($event, 'connect_button_hover_text_color')" class="color-input">
                         </td>
                     </tr>
                 </table>
@@ -479,4 +489,17 @@ const pickerShown = ref(null);
         </div>
 </AuthenticatedUserLayout>
 </template>
+<style>
+input.color-input {
+    width: 200px;
+    border-radius: 0 0 8px 8px;
+    font-size: 12px;
+    text-align: center;
+    border: 1px solid #CCC;
+}
+
+hex-color-picker::part(hue) {
+    border-radius: 0;
+}
+</style>
 
