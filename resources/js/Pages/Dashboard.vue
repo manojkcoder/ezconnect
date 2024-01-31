@@ -150,7 +150,7 @@ function init(el, binding) {
                                     </tbody>
                                 </table>
                             </div>
-                            <a v-if="contact_requests.length > 5" class="linktext" :href="route('contact-requests.index')">View All Contact Requests</a>
+                            <a v-if="contact_requests.length == 5" class="linktext" :href="route('contact-requests.index')">View All Contact Requests</a>
 
                         </div>
                     </section>

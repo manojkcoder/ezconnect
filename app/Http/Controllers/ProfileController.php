@@ -85,7 +85,8 @@ class ProfileController extends Controller
                     : back()->with('status', 'profile-photo-updated');
     }
 
-    public function getResizedFileName($path){
+    public function getResizedFileName($path)
+    {
         return strrev(str_replace('.', '.004_', strrev($path)));
     }
 
@@ -137,6 +138,10 @@ class ProfileController extends Controller
                 $user->socialNetworks()->create($data);
             }
         }
+
+        // Remove social networks that were deleted
+        $user->socialNetworks()->whereNotIn('id', array_column($socialNetworks, 'id'))->delete();
+
         return $request->wantsJson()
                     ? new HttpResponse(['message' => 'Profile Updated Successfully'], 200)
                     : back()->with('status', 'profile-information-updated');
@@ -164,28 +169,35 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    public function publicProfile($username){
+    public function publicProfile($username)
+    {
         $user = \App\Models\User::where('username', $username)->with('socialNetworks.socialNetwork')->firstOrFail();
         return $this->renderProfileView($user);
     }
 
-    public function publicProfileId($id){
-        return $user = \App\Models\User::find($id);
-        if(!$user){
+    public function publicProfileId($id)
+    {
+        $user = \App\Models\User::find($id);
+        if(!$user)
+        {
             return redirect()->route('home');
         }
-        if($user->username){
+        if($user->username)
+        {
             return redirect()->route('public_profile', $user->username);
         }
         return $this->renderProfileView($user);
     }
 
-    public function renderProfileView($user){
+    public function renderProfileView($user)
+    {
 
-        if($user->profile_picture){
+        if($user->profile_picture)
+        {
             $user->profile_picture_base64 = base64_encode(Storage::get(str_replace('storage', 'public', $this->getResizedFilename($user->profile_picture))));
         }
-        if($user->logo){
+        if($user->logo)
+        {
             $user->logo_base64 = base64_encode(Storage::get(str_replace('storage', 'public', $this->getResizedFilename($user->logo))));
         }
         event(new \App\Events\ProfileVisited($user->id));
@@ -193,9 +205,11 @@ class ProfileController extends Controller
         return Inertia::render('PublicProfile', compact('user', 'networks'));
     }
 
-    public function deleteAsset($type, Request $request){
+    public function deleteAsset($type, Request $request)
+    {
         $user = $request->user();
-        switch($type){
+        switch($type)
+        {
             case 'profile_picture':
                 Storage::delete(str_replace('storage', 'public', $user->profile_picture));
                 $user->profile_picture = null;
@@ -216,7 +230,8 @@ class ProfileController extends Controller
                     : back()->with('status', 'banner-deleted');
     }
 
-    public function connectRequest(Request $request){
+    public function connectRequest(Request $request)
+    {
 
         $request->validate([
             'user_id' => ['required', 'integer'],
@@ -243,7 +258,8 @@ class ProfileController extends Controller
 
     }
 
-    public function storeChangePassword(Request $request){
+    public function storeChangePassword(Request $request)
+    {
         $request->validate([
             'current_password' => ['required', 'current_password'],
             'password' => ['required', 'confirmed', 'min:8'],
@@ -259,7 +275,8 @@ class ProfileController extends Controller
 
     }
 
-    public function clickTracker($network, Request $request){
+    public function clickTracker($network, Request $request)
+    {
         event(new \App\Events\LinkClicked($network));
 
         return $request->wantsJson()

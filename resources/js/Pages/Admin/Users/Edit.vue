@@ -17,6 +17,7 @@ const props = defineProps({
 const formData = ref({
     name: props.user.name,
     email: props.user.email,
+    id: props.user.id,
     is_blocked: props.user.is_blocked
 });
 

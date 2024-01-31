@@ -28,11 +28,11 @@ const props = defineProps({
 
                 <TextInput class="full-row" label="Email" type="text" name="email" v-model="formData.email" :error="formErrors.email?.pop()" required />
 
-                <Checkbox v-if="formData.hasOwnProperty('welcome_email')" v-model:checked="formData.welcome_email" v-bind:label="'Send User a welcome email with password reset link'" />
+                <Checkbox v-if="formData.hasOwnProperty('welcome_email')" v-model:checked="formData.welcome_email" v-bind:label="'Send User a welcome email with password reset link'" class="full-row" />
 
                 <Checkbox v-if="formData.hasOwnProperty('is_blocked')" v-model:checked="formData.is_blocked" v-bind:label="'Block User'" />
 
-                <div class="form-submit full-row"><a class="site-btn" :href="route('admin.dashboard')">Cancel</a><input class="site-btn dark-btn submit" type="submit" :value="formData.email ? 'Update' : 'Create'"></div>
+                <div class="form-submit full-row"><a class="site-btn" :href="route('admin.dashboard')">Cancel</a><input class="site-btn dark-btn submit" type="submit" :value="formData.id ? 'Update' : 'Create'"></div>
             </div>
         </div>
     </form>
