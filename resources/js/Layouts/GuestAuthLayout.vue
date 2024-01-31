@@ -8,7 +8,7 @@ import { Link } from '@inertiajs/vue3';
         <div class="container"> 
             <div class="half-column image-col">
                 <div class="logo">
-                    <img src="../../images/logo.png" alt="Logo">
+                    <img src="../../images/logo.svg" alt="Logo">
                 </div>
                 <div class="img-box">
                 <img src="../../images/sign-in-img.svg" alt="Sign in">

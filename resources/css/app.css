@@ -1846,11 +1846,8 @@ a.swatch {
     width: 100%;
 }
 
-@media (min-width:1921px) {
-    .sectionSideBar.profile-page {
-        padding: 180px 15px;
-        background-size: 100% 440px
-    }
+.logo img {
+    width: 200px;
 }
 
 @media (max-width:1700px) {
@@ -3116,7 +3113,7 @@ button.transparent-button {
 }
 
 .vue3-easy-data-table__main table {
-    width: 100%;
+    min-width: 100%;
 }
 
 .vue3-easy-data-table__header th {

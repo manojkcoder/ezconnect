@@ -23,7 +23,7 @@ const downloadQr = () => {
         <div class="container full-container">
             <div class="logo">
                 <a :href="route('dashboard')">
-                    <img src="../../images/logo.png" alt="Logo">
+                    <img src="../../images/logo.svg" alt="Logo">
                 </a>
             </div>
             <div class="nav">

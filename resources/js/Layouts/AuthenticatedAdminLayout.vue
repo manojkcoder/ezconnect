@@ -7,7 +7,7 @@ import AdminSidebar from './AdminSidebar.vue';
     <header>
         <div class="container full-container">
             <div class="logo">
-                <img src="../../images/logo.png" alt="Logo">
+                <img src="../../images/logo.svg" alt="Logo">
             </div>
             <div class="nav">
                 <nav>
