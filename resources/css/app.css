@@ -1490,6 +1490,9 @@ ul.apps-overview-list li span.icons img {
 }
 
 .select-form select {
+    -webkit-appearance: initial;
+    -moz-appearance: initial;
+    appearance: initial;
     padding: 10px 45px;
     border: 0px;
     border-radius: 30px;
@@ -1498,6 +1501,7 @@ ul.apps-overview-list li span.icons img {
     outline: 0px !important;
     background-color: #fff;
     min-width: 200px;
+
 }
 
 .select-form {
