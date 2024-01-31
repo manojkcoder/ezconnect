@@ -116,7 +116,7 @@ const handleTerms = (value) => {
 
 <template>
     <Head :title="user.name" />
-    <a v-if="isLoggedIn" :href="route('dashboard')" class="profile-top-nav">Dashboard</a>
+    <a v-if="isLoggedIn" :href="route('dashboard')" class="profile-top-nav site-btn">Dashboard</a>
     <a :href="route('login')" v-else class="profile-top-nav">Login</a>
     <section class="sectionSideBar profile-page">
         <Show :user="props.user" :networks="props.networks" :downloadContact="downloadVCF" :connectFormToggle="toggleConnectForm" :clickTracker="clickTracker"/>
