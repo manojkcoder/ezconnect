@@ -120,7 +120,10 @@ class ProfileController extends Controller
         $request->user()->save();
         $socialNetworks = $request->input('social_networks');
         $user = $request->user();
-        $existingSocialNetworks = $user->socialNetworks()->pluck('id')->toArray();
+	$existingSocialNetworks = $user->socialNetworks()->pluck('id')->toArray();
+
+        // Remove social networks that were deleted
+        $user->socialNetworks()->whereNotIn('id', array_column($socialNetworks, 'id'))->delete();
 
         foreach ($socialNetworks as $order => $socialNetwork) {
             $social_network_id = $socialNetwork['social_network_id'];
@@ -137,13 +140,11 @@ class ProfileController extends Controller
                 // Create new social network
                 $user->socialNetworks()->create($data);
             }
-        }
-
-        // Remove social networks that were deleted
-        $user->socialNetworks()->whereNotIn('id', array_column($socialNetworks, 'id'))->delete();
+	}
+        $user->load('socialNetworks.socialNetwork');
 
         return $request->wantsJson()
-                    ? new HttpResponse(['message' => 'Profile Updated Successfully'], 200)
+                    ? new HttpResponse(['message' => 'Profile Updated Successfully', 'user' => $user], 200)
                     : back()->with('status', 'profile-information-updated');
 
     }

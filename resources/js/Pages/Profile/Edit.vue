@@ -55,7 +55,7 @@ components: {
     draggable
 };
 
-const emptyNetwork = { id: 'none', name: '', icon: 'custom', type: 'url' };
+const emptyNetwork = { id: 'none', name: 'Select', icon: 'custom', type: 'url' };
 const networks = [emptyNetwork, ...props.socialNetworks];
 
 const addNetwork = (index) => {
@@ -127,6 +127,7 @@ const saveForm = async (event) => {
     }
     try {
         const response = await axios.patch(route('profile.update'), formData.value);
+	formData.value.social_networks = response.data.user.social_networks;
         toast.success(response.data.message, { timeout: 3000, position: 'bottom-right', closeOnClick: true });
     } catch (error) {
         toast.error('Error updating profile');
@@ -273,7 +274,7 @@ const pickerShown = ref(null);
                                             <div class="dragable-row" draggable="true">
                                                 <div class="select-field field">
                                                     <select class="form-select" :class="getError(index, 'social_network_id') ? 'error' : ''" v-on:change="($event) => updateNetwork($event, index)">
-                                                        <option v-for="network in networks" v-bind:value="network.key" v-bind:selected="network.id == element.social_network.id">{{ network.name }}</option>
+							<option v-for="network in networks" v-bind:value="network.key" v-bind:selected="network.id == element.social_network.id">{{ network.name }}</option>
                                                     </select>
                                                     <p class="error-msg">{{ getError(index, 'social_network_id') ? 'This field is required' : '' }}</p>
                                                 </div>

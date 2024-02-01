@@ -50,7 +50,7 @@ const customization = ref(typeof props.user.customization == 'string' ? JSON.par
             <a @click.prevent="downloadContact" class="site-btn dark-btn">Save my contact card</a>
             <a class="site-btn" @click.prevent="connectFormToggle">Connect with me</a>
             <div class="flex-row social-media">
-                <a class="" :href="network.social_network.format.replace('{value}', network.url)" v-for="(network, index) in user.social_networks" target="_blank" v-on:click="clickTracker(network.id)">
+                <a class="" :href="network.social_network.format ? network.social_network.format.replace('{value}', network.url) : ''" v-for="(network, index) in user.social_networks" target="_blank" v-on:click="clickTracker(network.id)">
                     <span class="icon svg-icon" :class="network.social_network.icon" v-bind:style="[network.custom_icon_url ? {backgroundImage: 'url('+network.custom_icon_url+')'} : {}]"></span>
                     <span v-text="network.name"></span>
                 </a>
