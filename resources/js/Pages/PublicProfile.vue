@@ -67,6 +67,11 @@ const downloadVCF = () => {
 
 const toggleConnectForm = () => {
     connectFormVisible.value = !connectFormVisible.value;
+    if(connectFormVisible.value){
+        document.body.style.overflow = 'hidden';
+    }else{
+        document.body.style.overflow = 'auto';
+    }
 }
 
 const emptyFormData = {
