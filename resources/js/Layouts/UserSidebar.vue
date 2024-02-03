@@ -26,7 +26,7 @@ const active = url.split('/').pop();
                 <a :href="route('connections.index')" :class="active == 'connections' ? 'current' : ''"><img src="../../images/icons/connection-icon.svg" alt="Connections">Connections</a>
             </li> -->
             <li>
-                <a :href="route('contact-requests.index')" :class="active == 'contact-requests' ? 'current' : ''"><img src="../../images/icons/contact-icon.svg" alt="Contact Requests">Contact Requests</a>
+                <a :href="route('contact-requests.index')" :class="active == 'contact-requests' ? 'current' : ''"><img src="../../images/icons/contact-icon.svg" alt="Contacts">Contacts</a>
             </li>
             <li>
                 <a :href="route('profile.change-password')" :class="active == 'change-password' ? 'current' : ''"><img src="../../images/icons/password-icon.svg" alt="Change Password">Change Password</a>

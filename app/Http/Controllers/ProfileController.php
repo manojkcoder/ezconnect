@@ -239,10 +239,15 @@ class ProfileController extends Controller
             'name' => ['required', 'max:255'],
             'email' => ['required', 'email'],
             'phone' => ['required', 'max:255'],
-            'company' => ['nullable', 'max:255'],
+            'company_name' => ['nullable', 'max:255'],
             'title' => ['nullable', 'max:255'],
             'message' => ['nullable', 'max:500'],
             'terms' => ['required', 'accepted'],
+        ], [
+            'terms.accepted' => 'Please fill out all required fields.',
+            'email.required' => 'Please fill out all required fields.',
+            'name.required' => 'Please fill out all required fields.',
+            'phone.required' => 'Please fill out all required fields.',
         ]);
 
         // store the request as a ContactRequest and email the user about it
@@ -254,7 +259,7 @@ class ProfileController extends Controller
         event(new \App\Events\ContactRequestReceived($user, $contactRequest));
 
         return $request->wantsJson()
-                    ? new HttpResponse(['message' => 'Request Sent Successfully', 'success' => true], 200)
+                    ? new HttpResponse(['message' => 'Contact saved successfully!', 'success' => true], 200)
                     : back()->with('status', 'request-sent');
 
     }

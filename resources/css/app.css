@@ -326,7 +326,6 @@ main.content {
 .profile-wrapper,
 .form-wrapper {
     margin-bottom: 40px;
-    border-bottom: 1px solid #F0F0F0;
     padding-bottom: 50px;
 }
 
@@ -386,14 +385,11 @@ section.section.contactRequestSection {
 }
 
 .upload-field input {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    opacity: 0;
+    display: none;
+}
+
+.site-btn{
     cursor: pointer;
-    width: 100%;
 }
 
 .site-btn.dark-btn {
@@ -1850,6 +1846,10 @@ a.swatch {
     width: 200px;
 }
 
+span.required {
+    color: #c50000;
+}
+
 @media (max-width:1700px) {
     .section {
         padding: 40px
@@ -2631,7 +2631,7 @@ a.swatch {
     }
 
     .profile-popup>.container {
-        height: calc(100% - 190px);
+        height: calc(100% - 60px);
         overflow: auto;
         padding: 25px;
     }

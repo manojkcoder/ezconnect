@@ -24,6 +24,8 @@ class ContactRequest extends Model
         'email',
         'phone',
         'message',
+        'title',
+        'company_name',
     ];
 
     public function getFormattedCreatedAtAttribute()

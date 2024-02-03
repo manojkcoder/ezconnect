@@ -175,6 +175,23 @@ const uploadIcon = async (event, element, index) => {
     }
 };
 
+
+const vTooltip = {
+    mounted(el, binding) {
+      init(el, binding);
+    },
+    updated(el, binding) {
+      init(el, binding);
+    }
+};
+
+function init(el, binding) {
+  let position = binding.arg || "top";
+  let tooltipText = binding.value || "Tooltip text";
+  el.setAttribute("position", position);
+  el.setAttribute("tooltip", tooltipText);
+}
+
 const customizePanel = ref(false);
 
 const handleColorChanged = (event, field) => {
@@ -185,6 +202,17 @@ const showPicker = (field) => {
     pickerShown.value == field ? pickerShown.value = null : pickerShown.value = field;
 };
 const pickerShown = ref(null);
+
+const placeholderText = (type) => {
+    switch (type) {
+        case 'url':
+            return 'Enter the full URL here';
+        case 'phone':
+            return 'Enter your phone number here';
+        default:
+            return 'Enter your '+type+' here';
+    }
+};
 
 </script>
 
@@ -206,11 +234,11 @@ const pickerShown = ref(null);
                                     <div class="empty-photo" v-else></div>
                                 </span>
                                 <span class="upload-field">
-                                    <label class="upload-field-label">
-                                        <h4>Profile Photo</h4>
-                                        <span class="site-btn dark-btn">Upload Photo</span>
-                                    </label>
-                                    <input type="file" id="profile-picture" ref="profile_picture" @change="uploadAsset('profile_picture')">
+                                    <div class="upload-field-label">
+                                        <h4>Profile Photo <span v-tooltip:left.tooltip="'To ensure optimal display, please upload profile photos with an aspect ratio of 1:1, such as 250x250 pixels.'"><img src="../../../images/icons/info-icon.svg" width="15"></span></h4>
+                                        <label class="site-btn dark-btn" for="profile_picture">Upload Photo</label>
+                                        <input type="file" id="profile_picture" ref="profile_picture" @change="uploadAsset('profile_picture')">
+                                    </div>
                                 </span>
                             </div>
                             <div class="profile-logo">
@@ -220,11 +248,11 @@ const pickerShown = ref(null);
                                     <div class="empty-photo" v-else></div>
                                 </span>
                                 <span class="upload-field">
-                                    <label class="upload-field-label">
+                                    <div class="upload-field-label">
                                         <h4>Logo</h4>
-                                        <span class="site-btn dark-btn">Upload Logo</span>
-                                    </label>
-                                    <input type="file" id="company-logo" ref="logo" @change="uploadAsset('logo')">
+                                        <label class="site-btn dark-btn" for="company-logo">Upload Logo</label>
+                                        <input type="file" id="company-logo" ref="logo" @change="uploadAsset('logo')">
+                                    </div>
                                 </span>
                             </div>
                         </div>
@@ -241,7 +269,7 @@ const pickerShown = ref(null);
                                 <TextInput label="Title" :type="'text'" name="title" v-model="formData.title" :error="formErrors.title?.pop()" required />
 
                                 <div class="field">
-                                    <label>Upload Banner Picture</label>
+                                    <label>Upload Banner Picture  <span v-tooltip:left.tooltip="'To ensure optimal display, please upload photo with an aspect ratio of 4:1, such as 1000x250 pixels.'"><img src="../../../images/icons/info-icon.svg" width="15"></span></label>
                                     <div class="banner-upload-field">
                                         <input type="file" class="form-control" ref="banner_picture" @change="uploadAsset('banner_picture')">
                                         <span class="banner-upload-label">
@@ -274,7 +302,7 @@ const pickerShown = ref(null);
                                             <div class="dragable-row" draggable="true">
                                                 <div class="select-field field">
                                                     <select class="form-select" :class="getError(index, 'social_network_id') ? 'error' : ''" v-on:change="($event) => updateNetwork($event, index)">
-							<option v-for="network in networks" v-bind:value="network.key" v-bind:selected="network.id == element.social_network.id">{{ network.name }}</option>
+							                            <option v-for="network in networks" v-bind:value="network.key" v-bind:selected="network.id == element.social_network.id">{{ network.name }}</option>
                                                     </select>
                                                     <p class="error-msg">{{ getError(index, 'social_network_id') ? 'This field is required' : '' }}</p>
                                                 </div>
@@ -283,7 +311,7 @@ const pickerShown = ref(null);
                                                     <input type="file" :id="'upload_icon_'+index" style="display: none;" @change="(event) => uploadIcon(event, this, index)">
                                                     <span class="icon svg-icon" :class="element.social_network.icon" v-if="element.social_network.icon !== 'custom'"></span>
                                                 </div>
-                                                <TextInput :placeholder="'Enter the '+element.social_network.type+' here'" label="" :type="'text'" name="url" v-model="element.url" :error="getError(index, 'url')" required v-if="element.name !== 'File'"/>
+                                                <TextInput :placeholder="placeholderText(element.social_network.type)" label="" :type="'text'" name="url" v-model="element.url" :error="getError(index, 'url')" required v-if="element.name !== 'File'"/>
                                                 <div v-else class="field full-field" style="flex-direction: row;">
                                                     <input type="file" style="display: none;" :id="'file_'+index" @change="(event) => uploadFile(event, this, index)">
                                                     <label type="button" class="site-btn text-center" :for="'file_'+index"><i class="icon-upload-icon"></i></label>
@@ -317,9 +345,7 @@ const pickerShown = ref(null);
                     </form><!-- Form End-->
                     <div>
                         <h1>Preview</h1>
-                        <div class="sectionSideBar">
-                            <Show :user="formData" :networks="networks" />
-                        </div>
+                        <Show :user="formData" :networks="networks" />
                     </div>
                 </div>
             </section>

@@ -60,11 +60,12 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
         Route::delete('/delete-asset/{type}', [ProfileController::class, 'deleteAsset'])->name('profile.delete-asset');
     });
 
-    // Contact Requests...
+    // Contacts...
     Route::group(['prefix' => 'contact-requests'], function () {
         Route::get('/', [ContactRequestsController::class, 'index'])->name('contact-requests.index');
         Route::post('/', [ContactRequestsController::class, 'store'])->name('contact-requests.store');
         Route::get('/all-requests', [ContactRequestsController::class, 'allRequests'])->name('contact-requests.all-requests');
+        Route::get('/all-requests/export', [ContactRequestsController::class, 'exportRequests'])->name('contact-requests.export-requests');
         Route::delete('/{contactRequest}', [ContactRequestsController::class, 'destroy'])->name('contact-requests.destroy');
     });
 

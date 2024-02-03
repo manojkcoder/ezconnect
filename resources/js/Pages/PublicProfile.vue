@@ -73,7 +73,7 @@ const emptyFormData = {
     name: '',
     phone: '',
     email: '',
-    company: '',
+    company_name: '',
     title: '',
     message: '',
     terms: false,
@@ -118,9 +118,7 @@ const handleTerms = (value) => {
     <Head :title="user.name" />
     <a v-if="isLoggedIn" :href="route('dashboard')" class="profile-top-nav site-btn">Dashboard</a>
     <a :href="route('login')" v-else class="profile-top-nav">Login</a>
-    <section class="sectionSideBar profile-page">
-        <Show :user="props.user" :networks="props.networks" :downloadContact="downloadVCF" :connectFormToggle="toggleConnectForm" :clickTracker="clickTracker"/>
-    </section>
+    <Show :user="props.user" :networks="props.networks" :downloadContact="downloadVCF" :connectFormToggle="toggleConnectForm" :clickTracker="clickTracker" :wrapper-class="'profile-page'"/>
 
     <div class="popup-wrapper profile-popup" v-show="connectFormVisible">
         <div class="container"> 
@@ -129,13 +127,13 @@ const handleTerms = (value) => {
                 <div class="form-wrapper">
                     <div class="container">
                         
-                        <TextInput label="Name" :class="'full-row'" v-model:modelValue="formData.name" :error="formErrors.name?.pop()"/>
+                        <TextInput label="Name" :class="'full-row'" v-model:modelValue="formData.name" :error="formErrors.name?.pop()" :required="true"/>
 
-                        <TextInput label="Phone Number" :class="'full-row'" v-model:modelValue="formData.phone" :error="formErrors.phone?.pop()"/>
+                        <TextInput label="Phone Number" :class="'full-row'" v-model:modelValue="formData.phone" :error="formErrors.phone?.pop()" :required="true"/>
 
-                        <TextInput label="Email" :class="'full-row'" v-model:modelValue="formData.email" :error="formErrors.email?.pop()"/>
+                        <TextInput label="Email" :class="'full-row'" v-model:modelValue="formData.email" :error="formErrors.email?.pop()" :required="true"/>
 
-                        <TextInput label="Company" :class="'full-row'" v-model:modelValue="formData.company" :error="formErrors.company?.pop()"/>
+                        <TextInput label="Company Name" :class="'full-row'" v-model:modelValue="formData.company_name" :error="formErrors.company_name?.pop()"/>
 
                         <TextInput label="Title" :class="'full-row'" v-model:modelValue="formData.title" :error="formErrors.title?.pop()"/>
 

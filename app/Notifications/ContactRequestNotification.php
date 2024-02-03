@@ -44,7 +44,7 @@ class ContactRequestNotification extends Notification
                     ->line('Name: '.$this->contactRequest->name)
                     ->line('Email: '.$this->contactRequest->email)
                     ->line('Phone: '.$this->contactRequest->phone)
-                    ->lineIf($this->contactRequest->company, 'Company: '.$this->contactRequest->company)
+                    ->lineIf($this->contactRequest->company_name, 'Company Name: '.$this->contactRequest->company_name)
                     ->lineIf($this->contactRequest->title, 'Title: '.$this->contactRequest->title)
                     ->lineIf($this->contactRequest->message, 'Message: '.$this->contactRequest->message)
                     ->line('Thank you for using our application!');

@@ -26,6 +26,10 @@ defineProps({
     placeholder: {
         type: String,
     },
+    required: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 defineEmits(['update:modelValue']);
@@ -43,7 +47,7 @@ defineExpose({ focus: () => input.value.focus() });
 
 <template>
     <div class="field full-field" :class="class">
-        <label v-if="label" v-text="label"></label>
+        <label v-if="label">{{ label }} <span v-if="required" class="required">*</span></label>
         <input v-if="type !== 'textarea'" :type="type" class="form-control" :class="error ? 'error' : ''" v-bind:placeholder="placeholder ? placeholder : 'Enter '+label" :name="name" :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         ref="input"

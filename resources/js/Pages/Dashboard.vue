@@ -126,7 +126,7 @@ function init(el, binding) {
                         </div>
                     </div>
                     <!---  Top Card  Row  End  -->
-                    <h1 class="full-field contact-requests-heading">Contact Requests</h1>
+                    <h1 class="full-field contact-requests-heading">Contacts</h1>
                     <section class="section contactRequestSection">
                         <div class="container">
                             <div class="table-container">
@@ -150,7 +150,7 @@ function init(el, binding) {
                                     </tbody>
                                 </table>
                             </div>
-                            <a v-if="contact_requests.length == 5" class="linktext" :href="route('contact-requests.index')">View All Contact Requests</a>
+                            <a v-if="contact_requests.length == 5" class="linktext" :href="route('contact-requests.index')">View All Contacts</a>
 
                         </div>
                     </section>

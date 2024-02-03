@@ -60,7 +60,7 @@ const showCompleteDetails = (item = null) => {
 }
 
 const deleteContactRequest = (id) => {
-    confirm('Are you sure you want to delete this contact request?') && axios.delete(route('contact-requests.destroy', id)).then(response => {
+    confirm('Are you sure you want to delete this Contact?') && axios.delete(route('contact-requests.destroy', id)).then(response => {
         if(response.data.success){
             loadFromServer();
             toast.success(response.data.message);
@@ -74,15 +74,13 @@ const deleteContactRequest = (id) => {
 </script>
 
 <template>
-    <Head title="Contact Requests" />
+    <Head title="Contacts" />
 
     <AuthenticatedUserLayout>
         <main class="content">
             <div class="flex-row v-center">
-                <h1 class="mb-0">Contact Requests</h1>
-                <a class="site-btn export-btn">
-                    <!-- <img src="../images/icons/export-icon.svg" alt="Export CSV"> -->
-                    Export CSV</a>
+                <h1 class="mb-0">Contacts</h1>
+                <a class="site-btn export-btn" :href="route('contact-requests.export-requests')">Export CSV</a>
             </div>
                 <section class="section contactRequestSection">
                     <div class="">
@@ -133,6 +131,14 @@ const deleteContactRequest = (id) => {
                                 <tr>
                                     <td>Phone:</td>
                                     <td>{{ detailedItem.phone }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Title:</td>
+                                    <td>{{ detailedItem.title }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Company Name:</td>
+                                    <td>{{ detailedItem.company_name }}</td>
                                 </tr>
                                 <tr>
                                     <td>Message:</td>
