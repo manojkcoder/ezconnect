@@ -45,12 +45,11 @@ class WelcomeEmailNotification extends Notification implements ShouldQueue
     {
         $url = $this->resetUrl($notifiable);
         return (new MailMessage)
-            ->subject('Welcome To '.config('app.name'))
-            ->greeting('Hello '.$notifiable->name.'!')
-            ->line('Welcome to '.config('app.name').'! To get started, please set your password by clicking the button below.')
+            ->subject('Welcome To '.config('app.name').' - Password setup instructions')
+            ->greeting('Dear '.$notifiable->name.'!')
+            ->line('We are delighted to have you on board with EZCONNECT! To initiate your journey, kindly set your password by clicking the button provided below.')
             ->action('Set Password', $url)
-            ->line('This password setup link will expire in '.config('auth.passwords.'.config('auth.defaults.passwords').'.expire').' minutes.')
-            ->line('If the link expires, you can request a new one by visiting '.route('password.request').'.');
+            ->line('Please be advised that the password setup link has a validity period of 60 minutes'.config('auth.passwords.'.config('auth.defaults.passwords').'.expire').' minutes. Should the link expire, you can request a new one by visiting '.route('password.request'));
     }
 
     /**

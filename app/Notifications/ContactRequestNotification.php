@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\ContactRequest;
+use Illuminate\Support\HtmlString;
 
 class ContactRequestNotification extends Notification
 {
@@ -38,16 +39,18 @@ class ContactRequestNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->subject(config('app.name').': '.$this->contactRequest->name.' wants to connect with you.')
-                    ->greeting('Hello '.$notifiable->name.'!')
-                    ->line($this->contactRequest->name.' wants to connect with you.')
-                    ->line('Name: '.$this->contactRequest->name)
-                    ->line('Email: '.$this->contactRequest->email)
-                    ->line('Phone: '.$this->contactRequest->phone)
-                    ->lineIf($this->contactRequest->company_name, 'Company Name: '.$this->contactRequest->company_name)
-                    ->lineIf($this->contactRequest->title, 'Title: '.$this->contactRequest->title)
-                    ->lineIf($this->contactRequest->message, 'Message: '.$this->contactRequest->message)
-                    ->line('Thank you for using our application!');
+                    ->subject('EZCONNECT - New connection added')
+                    ->greeting('Dear '.$notifiable->name.'!')
+                    ->line('We are delighted to inform you that a new connection has been successfully added to your profile.')
+                    ->line('Please find the details of the new connection below:')
+                    ->line(new HtmlString('<b>Name:</b> '.$this->contactRequest->name .'<br>'
+                        .'<b>Email</b>: '.$this->contactRequest->email .'<br>'
+                        .'<b>Phone</b>: '.$this->contactRequest->phone .'<br>'
+                        .($this->contactRequest->company_name ? '<b>Company Name</b>: '.$this->contactRequest->company_name .'<br>' : '')
+                        .($this->contactRequest->title ? '<b>Title</b>: '.$this->contactRequest->title .'<br>' : '')
+                        .($this->contactRequest->message ? '<b>Message</b>: '.$this->contactRequest->message .'<br>' : '')))
+                    ->line('Thank you for using our application!')
+                    ->line(new HtmlString('Not interested? Manage your preferences <a href="'.route('profile.edit').'">here</a>'));
     }
 
     /**

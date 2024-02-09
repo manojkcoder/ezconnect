@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\WelcomeEmailNotification;
 use App\Notifications\ContactRequestNotification;
+use App\Notifications\CustomResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -105,5 +106,16 @@ class User extends Authenticatable
     public function sendContactRequestNotification($contactRequest)
     {
         $this->notify(new ContactRequestNotification($contactRequest));
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPasswordNotification($token));
     }
 }
