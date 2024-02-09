@@ -256,7 +256,10 @@ class ProfileController extends Controller
         $contactRequest->save();
 
         $user = \App\Models\User::find($request->user_id);
-        event(new \App\Events\ContactRequestReceived($user, $contactRequest));
+        if(!isset($user->customization['connect_email_notificaions']) || boolval($user->customization['connect_email_notificaions']))
+        {
+            event(new \App\Events\ContactRequestReceived($user, $contactRequest));
+        }
 
         return $request->wantsJson()
                     ? new HttpResponse(['message' => 'Contact saved successfully!', 'success' => true], 200)

@@ -125,7 +125,7 @@ const handleTerms = (value) => {
     <a :href="route('login')" v-else class="profile-top-nav">Login</a>
     <Show :user="props.user" :networks="props.networks" :downloadContact="downloadVCF" :connectFormToggle="toggleConnectForm" :clickTracker="clickTracker" :wrapper-class="'profile-page'"/>
 
-    <div class="popup-wrapper profile-popup" v-show="connectFormVisible">
+    <div class="popup-wrapper profile-popup" v-show="connectFormVisible" v-if="!user.customization.hasOwnProperty('show_connect_button') || user.customization.show_connect_button">
         <div class="container"> 
             <a class="close-btn" @click.prevent="toggleConnectForm"><i class="icon-close-icon"></i></a>
             <form class="section-main" @submit.prevent="sendConnectRequest">

@@ -8,6 +8,7 @@ import { toast } from 'vue3-toastify';
 import TextInput from '@/Components/TextInput.vue';
 import Show from './Show.vue';
 import "vue3-colorpicker/style.css";
+import Checkbox from '@/Components/Checkbox.vue';
 import 'vanilla-colorful';
 
 const props = defineProps({
@@ -34,7 +35,7 @@ const formData = ref({
     banner_picture: props.user.banner_picture,
     profile_picture: props.user.profile_picture,
     social_networks: props.user.social_networks || [],
-    customization: props.user.customization ? JSON.parse(props.user.customization) : {
+    customization: props.user.customization ? props.user.customization : {
         profile_picture_ring_color: '#8231D3',
         profile_background_color: '#FFFFFF',
         profile_text_color: '#606060',
@@ -42,6 +43,8 @@ const formData = ref({
         profile_buttons_text_color: '#FFFFFF',
         profile_buttons_hover_color: '#E9D6FF',
         profile_buttons_hover_text_color: '#8231D3',
+        show_connect_button: true,
+        connect_email_notificaions: true,
         connect_button_color: '#E9D6FF',
         connect_button_text_color: '#8231D3',
         connect_button_hover_color: '#8231D3',
@@ -214,6 +217,22 @@ const placeholderText = (type) => {
     }
 };
 
+const handleConnectButtonVisibility = () => {
+    if(formData.value.customization.hasOwnProperty('show_connect_button')){
+        formData.value.customization.show_connect_button = !formData.value.customization.show_connect_button;
+    }else{
+        formData.value.customization.show_connect_button = false;
+    }
+};
+
+const handleConnectEmailNotifications = () => {
+    if(formData.value.customization.hasOwnProperty('connect_email_notificaions')){
+        formData.value.customization.connect_email_notificaions = !formData.value.customization.connect_email_notificaions;
+    }else{
+        formData.value.customization.connect_email_notificaions = false;
+    }
+};
+
 </script>
 
 <template>
@@ -367,7 +386,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'profile_background_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_background_color" @color-changed="(event) => handleColorChanged(event, 'profile_background_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.profile_background_color" @change="handleColorChanged($event, 'profile_background_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.profile_background_color" class="color-input">
                         </td>
                     </tr>
 
@@ -380,7 +399,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'profile_picture_ring_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_picture_ring_color" @color-changed="(event) => handleColorChanged(event, 'profile_picture_ring_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.profile_picture_ring_color" @change="handleColorChanged($event, 'profile_picture_ring_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.profile_picture_ring_color" class="color-input">
                         </td>
                     </tr>
 
@@ -393,7 +412,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'profile_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_text_color" @color-changed="(event) => handleColorChanged(event, 'profile_text_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.profile_text_color" @change="handleColorChanged($event, 'profile_text_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.profile_text_color" class="color-input">
                         </td>
                     </tr>
 
@@ -411,7 +430,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'profile_buttons_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_buttons_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.profile_buttons_color" @change="handleColorChanged($event, 'profile_buttons_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.profile_buttons_color" class="color-input">
                         </td>
                     </tr>
 
@@ -424,7 +443,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'profile_buttons_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_buttons_text_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_text_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.profile_buttons_text_color" @change="handleColorChanged($event, 'profile_buttons_text_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.profile_buttons_text_color" class="color-input">
                         </td>
                     </tr>
 
@@ -437,7 +456,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'profile_buttons_hover_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_buttons_hover_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_hover_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.profile_buttons_hover_color" @change="handleColorChanged($event, 'profile_buttons_hover_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.profile_buttons_hover_color" class="color-input">
                         </td>
                     </tr>
 
@@ -450,13 +469,23 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'profile_buttons_hover_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.profile_buttons_hover_text_color" @color-changed="(event) => handleColorChanged(event, 'profile_buttons_hover_text_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.profile_buttons_hover_text_color" @change="handleColorChanged($event, 'profile_buttons_hover_text_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.profile_buttons_hover_text_color" class="color-input">
                         </td>
                     </tr>
 
 
                     <tr>
-                        <td colspan="2"><h3 class="mb-0 mt-10">Secondary button</h3></td>
+                        <td colspan="2"><h3 class="mb-0 mt-10">Secondary button - Connect With Me</h3></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <Checkbox :class="'full-row'" type="checkbox" v-model="formData.customization.show_connect_button" :checked="formData.customization.hasOwnProperty('show_connect_button') ? formData.customization.show_connect_button : true" label="Show button on profle" v-on:update:checked="handleConnectButtonVisibility"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <Checkbox :class="'full-row'" type="checkbox" v-model="formData.customization.show_connect_button" :checked="formData.customization.hasOwnProperty('connect_email_notificaions') ? formData.customization.connect_email_notificaions : (formData.customization.hasOwnProperty('show_connect_button') && formData.customization.show_connect_button == false ? false : true)" label="Send email notifications for new connections" v-on:update:checked="handleConnectEmailNotifications"/>
+                        </td>
                     </tr>
                     <tr>
                         <td>Background color</td>
@@ -467,7 +496,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'connect_button_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.connect_button_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.connect_button_color" @change="handleColorChanged($event, 'connect_button_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.connect_button_color" class="color-input">
                         </td>
                     </tr>
 
@@ -480,7 +509,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'connect_button_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.connect_button_text_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_text_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.connect_button_text_color" @change="handleColorChanged($event, 'connect_button_text_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.connect_button_text_color" class="color-input">
                         </td>
                     </tr>
 
@@ -493,7 +522,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'connect_button_hover_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.connect_button_hover_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_hover_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.connect_button_hover_color" @change="handleColorChanged($event, 'connect_button_hover_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.connect_button_hover_color" class="color-input">
                         </td>
                     </tr>
 
@@ -506,7 +535,7 @@ const placeholderText = (type) => {
                     <tr v-show="pickerShown == 'connect_button_hover_text_color'" class="mb-20">
                         <td colspan="2">
                             <hex-color-picker :color="formData.customization.connect_button_hover_text_color" @color-changed="(event) => handleColorChanged(event, 'connect_button_hover_text_color')"></hex-color-picker>
-                            <input type="text" v-model="formData.customization.connect_button_hover_text_color" @change="handleColorChanged($event, 'connect_button_hover_text_color')" class="color-input">
+                            <input type="text" v-model="formData.customization.connect_button_hover_text_color" class="color-input">
                         </td>
                     </tr>
                 </table>
