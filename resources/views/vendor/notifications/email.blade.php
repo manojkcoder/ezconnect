@@ -43,21 +43,18 @@
 {{ config('app.name') .' team'}}
 @endif
 
+<x-slot:subcopy>
 {{-- Subcopy --}}
 @isset($actionText)
-<x-slot:subcopy>
-@lang(
-    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
-    'into your web browser:',
-    [
-        'actionText' => $actionText,
-    ]
-) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
-
-{!! '<hr><small><i>This e-mail is confidential and is meant for the recipient only. If you are not the intended recipient, please inform the sender of this and destroy the message immediately.</i></small>'!!}
+    @lang(
+        "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
+        'into your web browser:',
+        [
+            'actionText' => $actionText,
+        ]
+    ) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span><br><hr><small><i>This e-mail is confidential and is meant for the recipient only. If you are not the intended recipient, please inform the sender of this and destroy the message immediately.</i></small>
+    @else
+    <small><i>This e-mail is confidential and is meant for the recipient only. If you are not the intended recipient, please inform the sender of this and destroy the message immediately.</i></small>
 </x-slot:subcopy>
-@else
-{!! '<hr><small><i>This e-mail is confidential and is meant for the recipient only. If you are not the intended recipient, please inform the sender of this and destroy the message immediately.</i></small>'!!}
-<x-slot:subcopy>
 @endisset
 </x-mail::message>
