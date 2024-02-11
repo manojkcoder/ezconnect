@@ -76,7 +76,7 @@ class CustomResetPasswordNotification extends Notification
     {
         return (new MailMessage)
             ->subject('EZCONNECT - Password reset request notification')
-            ->greeting('Dear '.$notifiable->name.'!')
+            ->greeting('Dear '.$notifiable->name.',')
             ->line('This communication serves to inform you that a password reset request has been initiated for your account. Should you require assistance in resetting your password, kindly utilize the provided "Reset Password" button.')
             ->action(Lang::get('Reset Password'), $url)
             ->line('Please be advised that the associated password reset link is set to expire within the next '.config('auth.passwords.'.config('auth.defaults.passwords').'.expire') .' minutes. If you did not initiate this password reset request, no further action is necessary.');

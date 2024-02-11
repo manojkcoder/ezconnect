@@ -40,7 +40,7 @@ class ContactRequestNotification extends Notification
     {
         return (new MailMessage)
                     ->subject('EZCONNECT - New connection added')
-                    ->greeting('Dear '.$notifiable->name.'!')
+                    ->greeting('Dear '.$notifiable->name.',')
                     ->line('We are delighted to inform you that a new connection has been successfully added to your profile.')
                     ->line('Please find the details of the new connection below:')
                     ->line(new HtmlString('<b>Name:</b> '.$this->contactRequest->name .'<br>'

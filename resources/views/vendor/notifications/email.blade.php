@@ -40,7 +40,7 @@
 {{ $salutation }}
 @else
 @lang(' Best Regards'),<br>
-{{ config('app.name') }}
+{{ config('app.name') .' Team'}}
 @endif
 
 {{-- Subcopy --}}
@@ -53,8 +53,11 @@
         'actionText' => $actionText,
     ]
 ) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
+
+{!! '<hr><small><i>This e-mail is confidential and is meant for the recipient only. If you are not the intended recipient, please inform the sender of this and destroy the message immediately.</i></small>'!!}
 </x-slot:subcopy>
 @else
+{!! '<hr><small><i>This e-mail is confidential and is meant for the recipient only. If you are not the intended recipient, please inform the sender of this and destroy the message immediately.</i></small>'!!}
+<x-slot:subcopy>
 @endisset
-{!! '<hr><i>This e-mail is confidential and is meant for the recipient only. If you are not the intended recipient, please inform the sender of this and destroy the message immediately.</i>'!!}
 </x-mail::message>
