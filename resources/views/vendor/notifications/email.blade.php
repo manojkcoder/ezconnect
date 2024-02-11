@@ -55,6 +55,7 @@
     ) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span><br><hr><small><i>This e-mail is confidential and is meant for the recipient only. If you are not the intended recipient, please inform the sender of this and destroy the message immediately.</i></small>
     @else
     <small><i>This e-mail is confidential and is meant for the recipient only. If you are not the intended recipient, please inform the sender of this and destroy the message immediately.</i></small>
-</x-slot:subcopy>
 @endisset
+</x-slot:subcopy>
+
 </x-mail::message>
