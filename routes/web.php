@@ -60,7 +60,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
         Route::delete('/delete-asset/{type}', [ProfileController::class, 'deleteAsset'])->name('profile.delete-asset');
     });
 
-    // Contacts...
+    // Connections...
     Route::group(['prefix' => 'contact-requests'], function () {
         Route::get('/', [ContactRequestsController::class, 'index'])->name('contact-requests.index');
         Route::post('/', [ContactRequestsController::class, 'store'])->name('contact-requests.store');

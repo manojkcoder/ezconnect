@@ -124,7 +124,7 @@ class ContactRequestsController extends Controller
         // Handle export requests
         $data = auth()->user()->contactRequests()->get();
         header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="contact-requests.csv"');
+        header('Content-Disposition: attachment; filename="Connections.csv"');
 
         $data = $data->toArray();    
         $out = fopen('php://output', 'w');

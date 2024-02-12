@@ -74,12 +74,12 @@ const deleteContactRequest = (id) => {
 </script>
 
 <template>
-    <Head title="Contacts" />
+    <Head title="Connections" />
 
     <AuthenticatedUserLayout>
         <main class="content">
             <div class="flex-row v-center">
-                <h1 class="mb-0">Contacts</h1>
+                <h1 class="mb-0">Connections</h1>
                 <a class="site-btn export-btn" :href="route('contact-requests.export-requests')">Export CSV</a>
             </div>
                 <section class="section contactRequestSection">

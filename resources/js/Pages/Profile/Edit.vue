@@ -162,6 +162,7 @@ const uploadFile = async (event, element, index) => {
         toast.success(response.data.message, { timeout: 3000, position: 'bottom-right', closeOnClick: true });
     } catch (error) {
         console.error(error); // Handle error response
+        toast.error('Error uploading file: '+error.response.data.message, { timeout: 3000, position: 'bottom-right', closeOnClick: true });
     }
 };
 
@@ -418,7 +419,7 @@ const handleConnectEmailNotifications = () => {
 
 
                     <tr>
-                        <td colspan="2"><h3 class="mb-0 mt-10">Primary button</h3></td>
+                        <td colspan="2"><h3 class="mb-0 mt-10">Primary button - Save My Contact Card</h3></td>
                     </tr>
                     <!--- Buttons  Colors -->
                     <tr>

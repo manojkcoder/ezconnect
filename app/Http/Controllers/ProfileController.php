@@ -81,7 +81,7 @@ class ProfileController extends Controller
         $user->save();
 
         return $request->wantsJson()
-                    ? new HttpResponse(['message' => 'Photo Uploaded Successfully', 'url' => $url], 200)
+                    ? new HttpResponse(['message' => 'Uploaded Successfully', 'url' => $url], 200)
                     : back()->with('status', 'profile-photo-updated');
     }
 
@@ -120,7 +120,7 @@ class ProfileController extends Controller
         $request->user()->save();
         $socialNetworks = $request->input('social_networks');
         $user = $request->user();
-	$existingSocialNetworks = $user->socialNetworks()->pluck('id')->toArray();
+	    $existingSocialNetworks = $user->socialNetworks()->pluck('id')->toArray();
 
         // Remove social networks that were deleted
         $user->socialNetworks()->whereNotIn('id', array_column($socialNetworks, 'id'))->delete();
@@ -262,7 +262,7 @@ class ProfileController extends Controller
         }
 
         return $request->wantsJson()
-                    ? new HttpResponse(['message' => 'Contact saved successfully!', 'success' => true], 200)
+                    ? new HttpResponse(['message' => 'Connection saved successfully!', 'success' => true], 200)
                     : back()->with('status', 'request-sent');
 
     }
