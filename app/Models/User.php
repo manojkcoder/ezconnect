@@ -35,6 +35,7 @@ class User extends Authenticatable
         'logo',
         'is_blocked',
         'customization',
+        'custom_tnc',
     ];
 
     /**

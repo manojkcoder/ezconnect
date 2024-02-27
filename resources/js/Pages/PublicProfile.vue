@@ -144,7 +144,7 @@ const handleTerms = (value) => {
 
                         <TextInput label="Message" :type="'textarea'" :class="'full-row'" v-model:modelValue="formData.message" :error="formErrors.message?.pop()"/>
 
-                        <Checkbox :checked="false" label="I agree to the <a href='https://google.com'>terms and conditions</a>" :class="'full-row'" v-model:modelValue="formData.terms" :error="formErrors.terms?.pop()" v-on:update:checked="handleTerms" />
+                        <Checkbox :checked="false" :label="'I agree to the <a href='+(user.hasOwnProperty('custom_tnc') && user.custom_tnc ? user.custom_tnc : 'https://ezconnect.fi/tnc')+'>terms and conditions</a>'" :class="'full-row'" v-model:modelValue="formData.terms" :error="formErrors.terms?.pop()" v-on:update:checked="handleTerms" />
                         
                     </div><!--- Form Container  End --> 
                 </div><!--- Form wrapper End --> 

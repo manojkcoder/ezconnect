@@ -30,6 +30,7 @@ const formData = ref({
     name: props.user.name,
     username: props.user.username || '',
     email: props.user.email,
+    custom_tnc: props.user.custom_tnc,
     bio: props.user.bio,
     logo: props.user.logo,
     banner_picture: props.user.banner_picture,
@@ -307,6 +308,9 @@ const handleConnectEmailNotifications = () => {
                                 <TextInput label="Email" :type="'text'" name="email" v-model="formData.email" :error="formErrors.email?.pop()" required />
 
                                 <TextInput :class="'full-row'" :placeholder="'Max 500 characters'" label="Bio" type="textarea" name="bio" v-model="formData.bio" :error="formErrors.bio?.pop()" required />
+
+                                <TextInput :class="'full-row'" label="Terms & Conditions (Optional)" placeholder="Link To Terms & Conditions (Optional)" :type="'text'" name="custom_tnc" v-model="formData.custom_tnc" :error="formErrors.custom_tnc?.pop()" />
+
                             </div><!--- Form Container  End -->
                         </div><!--- Form wrapper End -->
                         

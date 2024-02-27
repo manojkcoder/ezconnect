@@ -99,6 +99,7 @@ class ProfileController extends Controller
             'name' => ['required', 'max:255'],
             'username' => ['required', 'max:255', 'alpha_dash', 'unique:users,username,'.$request->user()->id],
             'email' => ['required', 'email'],
+            'custom_tnc' => ['nullable', 'max:5000', 'string'],
             'bio' => ['nullable', 'max:500'],
             'phone' => ['nullable', 'max:255'],
             'website' => ['nullable', 'max:255'],
