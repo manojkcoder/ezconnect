@@ -280,6 +280,9 @@ main.content {
 
 .sectionSideBar a.img-wrapper {
     border-radius: 50%;
+    width: 180px;
+    height: 180px;
+    min-width: 180px;
 }
 
 .sectionSideBar a.img-wrapper img{
@@ -1973,6 +1976,12 @@ span.required {
 
     .banner-upload-label span.site-btn+span {
         font-size: 12px
+    }
+
+    .sectionSideBar a.img-wrapper{
+        width: 150px;
+        height: 150px;
+        min-width: 150px
     }
 
     .sectionSideBar a.img-wrapper img{
