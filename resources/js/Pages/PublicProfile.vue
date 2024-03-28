@@ -34,7 +34,7 @@ const downloadVCF = () => {
     vCard.organization = props.user.company_name;
     if(props.user.profile_picture_base64 && props.user.profile_picture){
         // convert the image to base 64
-        vCard.photo.embedFromString(props.user.profile_picture_base64, props.user.logo.split('.').pop().toUpperCase());
+        vCard.photo.embedFromString(props.user.profile_picture_base64, props.user.profile_picture.split('.').pop().toUpperCase());
     }
     if(props.user.logo_base64 && props.user.logo){
         // convert the image to base 64
