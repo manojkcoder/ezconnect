@@ -32,11 +32,11 @@ const downloadVCF = () => {
     vCard.firstName = props.user.name.split(' ')[0];
     vCard.lastName = props.user.name.indexOf(' ') > -1 ? props.user.name.split(' ').splice(1).join(' ') : '';
     vCard.organization = props.user.company_name;
-    if(props.user.profile_picture_base64){
+    if(props.user.profile_picture_base64 && props.user.profile_picture){
         // convert the image to base 64
         vCard.photo.embedFromString(props.user.profile_picture_base64, props.user.logo.split('.').pop().toUpperCase());
     }
-    if(props.user.logo_base64){
+    if(props.user.logo_base64 && props.user.logo){
         // convert the image to base 64
         vCard.logo.embedFromString(props.user.logo_base64, props.user.logo.split('.').pop().toUpperCase());
     }
