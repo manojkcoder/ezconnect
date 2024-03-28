@@ -279,10 +279,14 @@ main.content {
 }
 
 .sectionSideBar a.img-wrapper {
+    border-radius: 50%;
+}
+
+.sectionSideBar a.img-wrapper img{
     width: 180px;
     height: 180px;
     min-width: 180px;
-    border-radius: 50%;
+    object-fit: cover;
 }
 
 .ss-inner {
@@ -1971,7 +1975,7 @@ span.required {
         font-size: 12px
     }
 
-    .sectionSideBar a.img-wrapper {
+    .sectionSideBar a.img-wrapper img{
         width: 150px;
         height: 150px;
         min-width: 150px
