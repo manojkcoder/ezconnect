@@ -1178,6 +1178,13 @@ a.setting-btn.active {
 
 .profile-page .flex-row.social-media {
     max-width: unset;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+div.sectionSideBar .icon + span {
+	line-height: normal;
+	font-size: 13px;
 }
 
 .profile-page .img-wrapper {
@@ -1963,6 +1970,9 @@ span.required {
 }
 
 @media (max-width:1300px) {
+    .profile-popup .switch {
+        min-width: 40px;
+    }
     span.banner-upload-label {
         padding: 5px;
         display: flex;
@@ -2323,6 +2333,37 @@ span.required {
 }
 
 @media (max-width:767px) {
+    .profile-popup textarea.form-control {
+        height: 80px;
+    }
+    .profile-popup .switch {
+        width: 40px;
+        min-width: 40px;
+    }
+    
+    .profile-popup .switch-toggle::before {
+        height: 20px;
+        width: 20px;
+        left: 0px;
+        bottom: -0.5px;
+    }
+    .profile-popup input:checked + .switch-toggle::before {
+        -webkit-transform: translateX(20px);
+        -ms-transform: translateX(20px);
+        transform: translate(20px);
+    }
+    
+    .popup-wrapper.profile-popup .form-wrapper + br {
+        display: none;
+    }
+     .profile-popup .form-wrapper {
+        margin-bottom: 10px;
+    }
+    
+    .profile-popup  label,   .profile-popup  span.required {
+        font-size: 12px;
+        line-height: 12px;
+    }
     header.pp-header .container {
         max-width: 100%;
         justify-content: flex-end
