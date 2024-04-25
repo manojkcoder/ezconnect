@@ -66,7 +66,7 @@ const downloadVCF = () => {
 }
 
 const toggleConnectForm = () => {
-    connectFormVisible.value = !connectFormVisible.value;
+    connectFormVisible.value = !connectFormVisible.value; return;
     if(connectFormVisible.value){
         document.body.style.overflow = 'hidden';
     }else{

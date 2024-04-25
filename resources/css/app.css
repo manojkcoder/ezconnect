@@ -947,6 +947,7 @@ form.change-password .field {
     justify-content: center;
     width: 100vw;
     height: 100vh;
+    padding: 20px 0px;
 }
 
 .card.flex-row {
@@ -2687,7 +2688,7 @@ span.required {
     }
 
     .profile-popup>.container {
-        height: calc(100% - 60px);
+        height: max-content;
         overflow: auto;
         padding: 25px;
     }
