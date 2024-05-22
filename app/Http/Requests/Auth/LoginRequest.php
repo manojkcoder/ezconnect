@@ -86,7 +86,7 @@ class LoginRequest extends FormRequest
 
     public function ensureUserIsNotBlocked(): void
     {
-        if ( !User::where('email', $this->input('email'))->first()->is_blocked ) {
+        if ( !User::where('email', $this->input('email'))->first()?->is_blocked ) {
             return;
         }
 
