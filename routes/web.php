@@ -3,11 +3,16 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\CompanyAdmin\DashboardController as CompanyAdminDashboardController;
+use App\Http\Controllers\CompanyAdmin\ContactRequestsController as CompanyAdminContactRequestsController;
+
+
 use App\Http\Controllers\User\ConnectionsController;
 use App\Http\Controllers\User\ContactRequestsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +48,50 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::patch('/users/{id}', [AdminDashboardController::class, 'updateUser'])->name('users.update');
     Route::get('/users/{id}', [AdminDashboardController::class, 'editUser'])->name('users.edit');
     Route::get('/all-users', [AdminDashboardController::class, 'allUsers'])->name('all-users');
+
+    Route::get('/companies', [AdminDashboardController::class, 'companies'])->name('companies');
+    Route::get('/all-company', [AdminDashboardController::class, 'allCompany'])->name('all-company');
+    Route::get('/company/add', [AdminDashboardController::class, 'addCompany'])->name('company.create');
+    Route::post('/company/store', [AdminDashboardController::class, 'storeCompanyAdmin'])->name('company.store');
+    Route::get('/company/{id}', [AdminDashboardController::class, 'editCompany'])->name('company.edit'); 
+    Route::get('/company/{id}/users', [AdminDashboardController::class, 'companyUsers'])->name('company.users');
+    Route::get('/company/{id}/usersdata', [AdminDashboardController::class, 'companyUsersData'])->name('company.usersdata');
+
 });
+
+Route::middleware(['auth', 'isCompanyAdmin'])->prefix('company-admin')->name('companyAdmin.')->group(function () {
+    // Dashboard and User Management Routes
+    Route::get('/my-users', [CompanyAdminDashboardController::class, 'index'])->name('my-users');
+    Route::get('/', [CompanyAdminDashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [CompanyAdminDashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/get-stats', [CompanyAdminDashboardController::class, 'getStats'])->name('dashboard.get-stats');
+    Route::get('/get-users', [CompanyAdminDashboardController::class, 'getUsers'])->name('dashboard.get-users');
+
+
+    //dashboard.get-users
+    Route::get('/users/add', [CompanyAdminDashboardController::class, 'addUser'])->name('users.create');
+    Route::put('/users/toggle-block-status/{id}', [CompanyAdminDashboardController::class, 'toggleBlockStatus'])->name('users.toggle-block-status');
+    Route::post('/users', [CompanyAdminDashboardController::class, 'storeUser'])->name('users.store');
+    Route::delete('/users/{id}/soft-delete', [CompanyAdminDashboardController::class, 'softDelete'])->name('users.softDelete');
+    Route::delete('/users/{id}', [CompanyAdminDashboardController::class, 'destroyUser'])->name('users.destroy');
+    Route::patch('/users/{id}', [CompanyAdminDashboardController::class, 'updateUser'])->name('users.update');
+    Route::get('/users/{id}', [CompanyAdminDashboardController::class, 'editUser'])->name('users.edit');
+    Route::get('/all-users', [CompanyAdminDashboardController::class, 'allUsers'])->name('all-users');
+
+    // Contact Requests Routes
+    Route::get('contact-requests', [CompanyAdminContactRequestsController::class, 'index'])->name('contact-requests.index');
+    // Route::post('contact-requests', [CompanyAdminContactRequestsController::class, 'store'])->name('contact-requests.store');
+    Route::get('contact-requests/all-requests', [CompanyAdminContactRequestsController::class, 'allRequests'])->name('contact-requests.all-requests');
+    Route::get('contact-requests/all-requests/export', [CompanyAdminContactRequestsController::class, 'exportRequests'])->name('contact-requests.export-requests');
+    Route::delete('contact-requests/{contactRequest}', [CompanyAdminContactRequestsController::class, 'destroy'])->name('contact-requests.destroy');
+    Route::get('contact-requests/{id}', [CompanyAdminContactRequestsController::class, 'show'])->name('contact-requests.show');
+    Route::get('contact-requests/{id}/edit', [CompanyAdminContactRequestsController::class, 'edit'])->name('contact-requests.edit');
+    Route::patch('contact-requests/{id}', [CompanyAdminContactRequestsController::class, 'update'])->name('contact-requests.update');
+});
+
+
+
+
 
 Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');

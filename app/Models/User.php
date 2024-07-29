@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\WelcomeEmailNotification;
 use App\Notifications\ContactRequestNotification;
@@ -13,8 +14,8 @@ use App\Notifications\CustomResetPasswordNotification;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
-
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -27,6 +28,7 @@ class User extends Authenticatable
         'password',
         'user_type',
         'company_name',
+        'company_id',
         'title',
         'email',
         'banner_picture',
@@ -68,6 +70,7 @@ class User extends Authenticatable
     {
         return match ($this->user_type) {
             'admin' => '/admin',
+            'company_admin' => '/company-admin',
             default => '/dashboard',
         };
     }
@@ -119,5 +122,9 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new CustomResetPasswordNotification($token));
+    }
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

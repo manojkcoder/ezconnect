@@ -3643,3 +3643,15 @@ button.transparent-button {
 label.icon.svg-icon.custom {
     cursor: pointer;
 }
+
+.full-row.flex-row.user_names .select-form {
+    width: auto;
+    margin: unset;
+}
+.full-row.flex-row.user_names {
+    justify-content: flex-end;
+}
+
+.top_10_users {
+    margin-top: 50px;
+}

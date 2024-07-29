@@ -32,4 +32,8 @@ class ContactRequest extends Model
     {
         return $this->created_at->format('d M Y, h:i A');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

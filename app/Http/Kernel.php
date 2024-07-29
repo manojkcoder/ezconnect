@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
 
         // Custom Middleware
         'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+        'isCompanyAdmin' => \App\Http\Middleware\IsCompanyAdmin::class,
     ];
 }
