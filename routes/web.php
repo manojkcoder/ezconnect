@@ -69,12 +69,12 @@ Route::middleware(['auth', 'isCompanyAdmin'])->prefix('company-admin')->name('co
 
 
     //dashboard.get-users
-    Route::get('/users/add', [CompanyAdminDashboardController::class, 'addUser'])->name('users.create');
+    // Route::get('/users/add', [CompanyAdminDashboardController::class, 'addUser'])->name('users.create');
     Route::put('/users/toggle-block-status/{id}', [CompanyAdminDashboardController::class, 'toggleBlockStatus'])->name('users.toggle-block-status');
-    Route::post('/users', [CompanyAdminDashboardController::class, 'storeUser'])->name('users.store');
-    Route::delete('/users/{id}/soft-delete', [CompanyAdminDashboardController::class, 'softDelete'])->name('users.softDelete');
-    Route::delete('/users/{id}', [CompanyAdminDashboardController::class, 'destroyUser'])->name('users.destroy');
-    Route::patch('/users/{id}', [CompanyAdminDashboardController::class, 'updateUser'])->name('users.update');
+    // Route::post('/users', [CompanyAdminDashboardController::class, 'storeUser'])->name('users.store');
+    // Route::delete('/users/{id}/soft-delete', [CompanyAdminDashboardController::class, 'softDelete'])->name('users.softDelete');
+    // Route::delete('/users/{id}', [CompanyAdminDashboardController::class, 'destroyUser'])->name('users.destroy');
+    // Route::patch('/users/{id}', [CompanyAdminDashboardController::class, 'updateUser'])->name('users.update');
     Route::get('/users/{id}', [CompanyAdminDashboardController::class, 'editUser'])->name('users.edit');
     Route::get('/all-users', [CompanyAdminDashboardController::class, 'allUsers'])->name('all-users');
 

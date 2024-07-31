@@ -233,6 +233,10 @@ class DashboardController extends Controller
                 $previous_start_date = now()->subDays(730)->startOfDay();
                 $previous_end_date = now()->subDays(365)->endOfDay();
                 break;
+            case 'custom_range':   
+                $start_date = $request->from_date . " 00:00:00";
+                $end_date = $request->to_date . " 23:59:59";
+                break;
             default:
                 $start_date = now()->subDays(3650)->startOfDay();
                 $end_date = now()->endOfDay();
@@ -271,21 +275,23 @@ class DashboardController extends Controller
             ->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)
             ->count();
-
-        $previous_visits = ProfileVisit::whereIn('user_id', $userIds)
-            ->whereDate('created_at', '>=', $previous_start_date)
-            ->whereDate('created_at', '<=', $previous_end_date)
-            ->count();
-
         $clicks = LinkClick::whereIn('user_id', $userIds)
             ->whereDate('created_at', '>=', $start_date)
             ->whereDate('created_at', '<=', $end_date)
             ->count();
-
-        $previous_clicks = LinkClick::whereIn('user_id', $userIds)
-            ->whereDate('created_at', '>=', $previous_start_date)
-            ->whereDate('created_at', '<=', $previous_end_date)
-            ->count();
+        if($request->time_period == "custom_range"){
+            $previous_visits = 0;
+            $previous_clicks = 0;
+        }else{
+            $previous_visits = ProfileVisit::whereIn('user_id', $userIds)
+                ->whereDate('created_at', '>=', $previous_start_date)
+                ->whereDate('created_at', '<=', $previous_end_date)
+                ->count();
+            $previous_clicks = LinkClick::whereIn('user_id', $userIds)
+                ->whereDate('created_at', '>=', $previous_start_date)
+                ->whereDate('created_at', '<=', $previous_end_date)
+                ->count();
+        }
 
         // Calculate the tap-through rate
         $tap_through_rate = number_format($visits > 0 ? round(($clicks / $visits) * 100, 2) : 0);

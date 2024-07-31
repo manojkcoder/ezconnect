@@ -3655,3 +3655,5 @@ label.icon.svg-icon.custom {
 .top_10_users {
     margin-top: 50px;
 }
+.select-date-range{display:flex;gap:10px;align-items:center;}
+.select-date-range input{padding:10px 20px;border:none;border-radius:30px;color:#797979;background-color:#FFF;width:150px;}

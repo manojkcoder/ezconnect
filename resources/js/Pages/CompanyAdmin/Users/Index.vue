@@ -96,9 +96,9 @@ const downloadQr = () => {
         <main class="content">
             <div class="flex-row user-row">
                 <h1 class="mb-0">Users</h1>
-                <div class="flex-row button-row">
+                <!-- <div class="flex-row button-row">
                     <a class="site-btn dark-btn" :href="route('companyAdmin.users.create')"> + Add User</a>
-                </div>
+                </div> -->
                 <div class="search-form">
                     <span class="search-wrapper">
                     <input type="search" name="Search" id="search" placeholder="Search by name..." v-model.lazy="search">
@@ -128,12 +128,12 @@ const downloadQr = () => {
                                 <button class="transparent-button" :class="user.is_blocked ? 'blocked' : 'not-blocked'" type="button" @click="toggleUserBlockStatus(user)">
                                     <i class="icon-blockuser-icon"></i>
                                 </button>
-                                <a :href="route('companyAdmin.users.edit', user.id)">
+                                <!-- <a :href="route('companyAdmin.users.edit', user.id)">
                                     <i class="icon-view-profile-icon"></i>
-                                </a>
-                                <button class="transparent-button" type="button" @click="softDeleteUser(user)">
+                                </a> -->
+                                <!-- <button class="transparent-button" type="button" @click="softDeleteUser(user)">
                                     <i class="icon-delete-profile-icon"></i>
-                                </button>
+                                </button> -->
                             </div>
                         </template>
                         <template #pagination="{ prevPage, nextPage, isFirstPage, isLastPage, currentPaginationNumber, maxPaginationNumber }">
