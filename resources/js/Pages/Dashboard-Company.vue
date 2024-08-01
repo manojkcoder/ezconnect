@@ -15,7 +15,8 @@
         previous_visits : null,
         clicks : null,
         previous_clicks : null,
-        tap_through_rate : null
+        tap_through_rate : null,
+        contactRequest: null
     });
     const users = ref([]);
     const loadUsers = async() => {
@@ -93,7 +94,7 @@
             </div>
             <div class="dashLeft">
                 <div class="top-cards flex-row">
-                    <div class="card performace-card">
+                    <div class="card performace-card" style="padding:25px;">
                         <div>
                             <span class="numberr">{{stats.visits}}</span>
                             <span :class="stats.visits > stats.previous_visits ? 'icreament' : 'decreament'">
@@ -105,11 +106,11 @@
                             </span>
                         </div>
                         <div class="performace-icons">
-                            <span style="display: flex;column-gap: 8px;"><img src="../../images/icons/view-gray-icon.svg">Views</span>
-                            <span style="display: flex;" v-tooltip:left.tooltip="'Profile Visits in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
+                            <span style="display:flex;column-gap:5px;font-size:12px;line-height:20px;"><img src="../../images/icons/view-gray-icon.svg">Views</span>
+                            <span style="display:flex;" v-tooltip:left.tooltip="'Profile Visits in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
                         </div>
                     </div>
-                    <div class="card performace-card">
+                    <div class="card performace-card" style="padding:25px;">
                         <div>
                             <span class="numberr">{{stats.clicks}}</span>
                             <span :class="stats.clicks > stats.previous_clicks ? 'icreament' : 'decreament'">
@@ -121,17 +122,26 @@
                             </span>
                         </div>
                         <div class="performace-icons">
-                            <span style="display: flex;column-gap: 8px;"><img src="../../images/icons/tap-links-icon.svg">Link Taps</span>
-                            <span style="display: flex;" v-tooltip:left.tooltip="'Social Links tapped in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
+                            <span style="display:flex;column-gap:5px;font-size:12px;line-height:20px;"><img src="../../images/icons/tap-links-icon.svg">Link Taps</span>
+                            <span style="display:flex;" v-tooltip:left.tooltip="'Social Links tapped in the selected period v/s last period.'"><img src="../../images/icons/info-icon.svg"></span>
                         </div>
                     </div>
-                    <div class="card performace-card">
+                    <div class="card performace-card" style="padding:25px;">
+                        <div>
+                            <span class="numberr">{{stats.contactRequest}}</span>
+                        </div>
+                        <div class="performace-icons">
+                            <span style="display:flex;column-gap:5px;font-size:12px;line-height:20px;"><img src="../../images/icons/rate-icon.svg">Contacts</span>
+                            <span style="display:flex;" v-tooltip:left.tooltip="'No. of contact request in the selected period.'"><img src="../../images/icons/info-icon.svg"></span>
+                        </div>
+                    </div>
+                    <div class="card performace-card" style="padding:25px;">
                         <div>
                             <span class="numberr">{{stats.tap_through_rate}}%</span>
                         </div>
                         <div class="performace-icons">
-                            <span style="display: flex;column-gap: 8px;"><img src="../../images/icons/rate-icon.svg">Tap through rate</span>
-                            <span style="display: flex;" v-tooltip:left.tooltip="'No. of profile visits leading to link clicks.'"><img src="../../images/icons/info-icon.svg"></span>
+                            <span style="display:flex;column-gap:5px;font-size:12px;line-height:20px;"><img src="../../images/icons/rate-icon.svg">Tap through rate</span>
+                            <span style="display:flex;" v-tooltip:left.tooltip="'No. of profile visits leading to link clicks.'"><img src="../../images/icons/info-icon.svg"></span>
                         </div>
                     </div>
                 </div>

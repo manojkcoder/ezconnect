@@ -27,7 +27,8 @@ class DashboardController extends Controller
     // }
     
     public function companyUsers(Request $request,$id){
-        return Inertia::render('Admin/Users/CompanyUsers',['companyId' => $id]);
+        $company = User::where("id",$id)->select(["*"])->first();
+        return Inertia::render('Admin/Users/CompanyUsers',['companyId' => $id,"company" => $company]);
     }
 
     /**

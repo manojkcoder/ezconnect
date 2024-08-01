@@ -10,6 +10,7 @@ import QrcodeVue from 'qrcode.vue';
 const { props } = usePage();
 
 const companyId = props.companyId; // Get companyId from props
+const company = props.company;
 
 const headers = [
     { text: "Name", value: "name", sortable: true },
@@ -90,7 +91,7 @@ loadFromServer();
     <AuthenticatedAdminLayout>
         <main class="content">
             <div class="flex-row user-row">
-                <h1 class="mb-0">Users</h1>
+                <h1 class="mb-0">{{ company.company_name }} - Users</h1>
                 <!-- <div class="flex-row button-row">
                     <a class="site-btn dark-btn" :href="route('admin.users.create')"> + Add User</a>
                 </div> -->

@@ -10,6 +10,7 @@ import QrcodeVue from 'qrcode.vue';
 const headers = [
     { text: "Name", value: "name", sortable: true },
     { text: "Email", value: "email", sortable: true },
+    { text: "Contact requests", value: "contact_requests", sortable: false },
     { text: "Actions", value: "actions", sortable: false }
 ];
 

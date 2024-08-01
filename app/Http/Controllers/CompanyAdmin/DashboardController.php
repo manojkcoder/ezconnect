@@ -124,25 +124,20 @@ class DashboardController extends Controller
     }
 
 
-    public function allUsers(Request $request)
-    {
-        return User::where('company_id', auth()->user()->id) // Only fetch users from the same company
-            ->when(
-                $request->search,
-                function ($query, $search) {
-                    $query->where('name', 'LIKE', '%' . $search . '%')
-                        ->orWhere('email', 'LIKE', '%' . $search . '%');
-                }
-            )->when(
-                $request->sortBy,
-                function ($query, $sortBy) use ($request) {
-                    $query->orderBy(
-                        is_array($sortBy) ? $sortBy[0] : $sortBy, 
-                        strtoupper(is_array($request->sortType) ? $request->sortType[0] : $request->sortType)
-                    );
-                }
-            )
-            ->paginate($request->rowsPerPage, ['*'], 'page', $request->page);
+    public function allUsers(Request $request){
+        $users = User::where('company_id',auth()->user()->id)->when($request->search,function($query,$search){
+            $query->where('name','LIKE','%' . $search . '%')->orWhere('email','LIKE','%' . $search . '%');
+        })->when($request->sortBy,function($query,$sortBy) use ($request){
+            $query->orderBy(
+                is_array($sortBy) ? $sortBy[0] : $sortBy, 
+                strtoupper(is_array($request->sortType) ? $request->sortType[0] : $request->sortType)
+            );
+        })->paginate($request->rowsPerPage,['*'],'page',$request->page);
+        $users = tap($users)->transform(function($user){
+            $user->contact_requests = ContactRequest::where('user_id',$user->id)->count();
+            return $user;
+        });
+        return $users;
     }
 
 
@@ -153,8 +148,8 @@ class DashboardController extends Controller
         $user->save();
 
         return $request->wantsJson()
-                    ? new HttpResponse(['message' => 'User updated.', 'success' => true], 200)
-                    : redirect()->route('companyAdmin.dashboard');
+            ? new HttpResponse(['message' => 'User updated.', 'success' => true], 200)
+            : redirect()->route('companyAdmin.dashboard');
     }
 
     public function updateUser(Request $request)
@@ -163,8 +158,8 @@ class DashboardController extends Controller
         $user->update($request->all());
 
         return $request->wantsJson()
-                    ? new HttpResponse(['message' => 'User updated.', 'success' => true], 200)
-                    : redirect()->route('companyAdmin.dashboard');
+            ? new HttpResponse(['message' => 'User updated.', 'success' => true], 200)
+            : redirect()->route('companyAdmin.dashboard');
     }
 
     public function destroyUser(Request $request)
@@ -173,8 +168,8 @@ class DashboardController extends Controller
         $user->delete();
 
         return $request->wantsJson()
-                    ? new HttpResponse(['message' => 'User deleted.', 'success' => true], 200)
-                    : redirect()->route('companyAdmin.dashboard');
+            ? new HttpResponse(['message' => 'User deleted.', 'success' => true], 200)
+            : redirect()->route('companyAdmin.dashboard');
     }
 
     public function softDelete($id)
@@ -193,10 +188,8 @@ class DashboardController extends Controller
         return response()->json($users);
     }
 
-    public function getStats(Request $request)
-    {
-        // Define the date ranges based on the requested time period
-        switch ($request->time_period) {
+    public function getStats(Request $request){
+        switch($request->time_period){
             case 'today':
                 $start_date = now()->startOfDay();
                 $end_date = now()->endOfDay();
@@ -227,13 +220,13 @@ class DashboardController extends Controller
                 $previous_start_date = now()->subDays(180)->startOfDay();
                 $previous_end_date = now()->subDays(90)->endOfDay();
                 break;
-            case 'last_365_days':   
+            case 'last_365_days':
                 $start_date = now()->subDays(365)->startOfDay();
                 $end_date = now()->endOfDay();
                 $previous_start_date = now()->subDays(730)->startOfDay();
                 $previous_end_date = now()->subDays(365)->endOfDay();
                 break;
-            case 'custom_range':   
+            case 'custom_range':
                 $start_date = $request->from_date . " 00:00:00";
                 $end_date = $request->to_date . " 23:59:59";
                 break;
@@ -244,60 +237,35 @@ class DashboardController extends Controller
                 $previous_end_date = now()->subDays(3650)->endOfDay();
                 break;
         }
-
         // Step 1: Get IDs of users in the company
-       // $userIds = User::where('company_id', auth()->user()->id)->pluck('id');
-       $userIds = [];
+        $userIds = [];
         $userName = $request->input('user_name');
-
-        if ($userName === 'all-user') {
-            // Get IDs of all users in the company
-            $userIds = User::where('company_id', auth()->user()->id)->pluck('id');
-        } else {
-            // Get the specific user ID
+        if($userName === 'all-user'){
+            $userIds = User::where('company_id',auth()->user()->id)->pluck('id');
+        }else{
             $userIds = [$userName];
         }
-
-        $social_networks = UserSocialNetwork::whereIn('user_id', $userIds) // Filter by user IDs
-        ->with('socialNetwork') // Eager load socialNetwork relation if needed
-        ->withCount(['clicks' => function ($q) use ($start_date, $end_date) {
-            $q->whereDate('created_at', '>=', $start_date)
-                ->whereDate('created_at', '<=', $end_date);
-        }])
-        ->orderBy('clicks_count', 'desc') // Order by clicks_count in descending order
-        ->get()
-        ->sortByDesc('clicks_count')
-        ->values()
-        ->all();    
+        $social_networks = UserSocialNetwork::whereIn('user_id',$userIds)->with('socialNetwork')->withCount(['clicks' => function($q) use ($start_date,$end_date){
+            $q->whereDate('created_at','>=',$start_date)->whereDate('created_at','<=',$end_date);
+        }])->orderBy('clicks_count','desc')->get()->sortByDesc('clicks_count')->values()->all();
 
         // Step 3: Get visit and click statistics
-        $visits = ProfileVisit::whereIn('user_id', $userIds)
-            ->whereDate('created_at', '>=', $start_date)
-            ->whereDate('created_at', '<=', $end_date)
-            ->count();
-        $clicks = LinkClick::whereIn('user_id', $userIds)
-            ->whereDate('created_at', '>=', $start_date)
-            ->whereDate('created_at', '<=', $end_date)
-            ->count();
+        $visits = ProfileVisit::whereIn('user_id',$userIds)->whereDate('created_at','>=',$start_date)->whereDate('created_at','<=',$end_date)->count();
+        $clicks = LinkClick::whereIn('user_id',$userIds)->whereDate('created_at','>=',$start_date)->whereDate('created_at','<=',$end_date)->count();
         if($request->time_period == "custom_range"){
             $previous_visits = 0;
             $previous_clicks = 0;
         }else{
-            $previous_visits = ProfileVisit::whereIn('user_id', $userIds)
-                ->whereDate('created_at', '>=', $previous_start_date)
-                ->whereDate('created_at', '<=', $previous_end_date)
-                ->count();
-            $previous_clicks = LinkClick::whereIn('user_id', $userIds)
-                ->whereDate('created_at', '>=', $previous_start_date)
-                ->whereDate('created_at', '<=', $previous_end_date)
-                ->count();
+            $previous_visits = ProfileVisit::whereIn('user_id',$userIds)->whereDate('created_at','>=',$previous_start_date)->whereDate('created_at','<=',$previous_end_date)->count();
+            $previous_clicks = LinkClick::whereIn('user_id',$userIds)->whereDate('created_at','>=',$previous_start_date)->whereDate('created_at','<=',$previous_end_date)->count();
         }
+        $contactRequest = ContactRequest::whereIn('user_id',$userIds)->whereDate('created_at','>=',$start_date)->whereDate('created_at','<=',$end_date)->count();
 
         // Calculate the tap-through rate
-        $tap_through_rate = number_format($visits > 0 ? round(($clicks / $visits) * 100, 2) : 0);
+        $tap_through_rate = number_format($visits > 0 ? round(($clicks / $visits) * 100,2) : 0);
 
         // 'social_networks',
-        return compact( 'social_networks', 'visits', 'previous_visits', 'clicks', 'previous_clicks', 'tap_through_rate');
+        return compact( 'social_networks','visits','previous_visits','clicks','previous_clicks','tap_through_rate','contactRequest');
     }
 
 }
