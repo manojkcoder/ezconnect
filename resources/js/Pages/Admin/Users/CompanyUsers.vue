@@ -92,9 +92,9 @@ loadFromServer();
         <main class="content">
             <div class="flex-row user-row">
                 <h1 class="mb-0">{{ company.company_name }} - Users</h1>
-                <!-- <div class="flex-row button-row">
-                    <a class="site-btn dark-btn" :href="route('admin.users.create')"> + Add User</a>
-                </div> -->
+                <div class="flex-row button-row">
+                    <a class="site-btn dark-btn" :href="route('admin.users.create',{companyId})"> + Add User</a>
+                </div>
                 <div class="search-form">
                     <span class="search-wrapper">
                         <input type="search" name="Search" id="search" placeholder="Search by name..." v-model.lazy="search">

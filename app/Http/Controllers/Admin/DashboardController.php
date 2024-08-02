@@ -37,8 +37,9 @@ class DashboardController extends Controller
      * 
      */
     public function addUser(Request $request){
+        $companyId = $request->companyId ? $request->companyId : null;
         $companies = User::where("user_type","company_admin")->select(["id","company_name as name"])->orderBy("name","ASC")->get();
-        return Inertia::render('Admin/Users/Create',compact('companies'));
+        return Inertia::render('Admin/Users/Create',compact('companies','companyId'));
     }
     public function addCompany(Request $request){
         return Inertia::render('Admin/Users/CreateCompany');

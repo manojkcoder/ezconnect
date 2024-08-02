@@ -4,11 +4,12 @@
     import {ref} from 'vue';
     import {toast} from 'vue3-toastify';
     import Form from './Form.vue';
-    const formErrors = ref({});
-    const formData = ref({company_id: '',name: '',email: '',id: '',welcome_email: true});
     const props = defineProps({
-        companies: {type: Array,default: () => []}
+        companies: {type: Array,default: () => []},
+        companyId: {type: String,default: () => null}
     });
+    const formErrors = ref({});
+    const formData = ref({company_id: props.companyId || "",name: "",email: "",id: "",welcome_email: true});
     const createUser = async () => {
         try{
             await axios.post(route('admin.users.store'), formData.value);
