@@ -4,6 +4,9 @@
     import {withDirectives} from 'vue';
     import {watch} from 'vue';
     import {ref} from 'vue';
+    import {Chart as ChartJS,CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend} from 'chart.js';
+    import {Line} from 'vue-chartjs';
+    ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend);
     const props = defineProps({
         contact_requests: {type: Array,default: () => []},
         topUsers: {type: Array,default: () => []}
@@ -16,8 +19,10 @@
         clicks : null,
         previous_clicks : null,
         tap_through_rate : null,
-        contactRequest: null
+        contactRequest: null,
+        chartData: null
     });
+    const loadedCharts = ref({loaded: false});
     const users = ref([]);
     const loadUsers = async() => {
         const response = await fetch(route('companyAdmin.dashboard.get-users'));
@@ -59,6 +64,15 @@
         formData.value["from_date"] = "";
         formData.value["to_date"] = "";
     }
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {beginAtZero:true}
+            }]
+        }
+    }
 </script>
 <template>
     <Head title="Dashboard"/>
@@ -91,6 +105,9 @@
                     <input type="date" v-model="formData.from_date" format="YYYY-MM-DD" :max="formData.to_date"/> - 
                     <input type="date" v-model="formData.to_date" format="YYYY-MM-DD" :min="formData.from_date"/>
                 </div>
+            </div>
+            <div class="full-row">
+                <Line v-if="stats.chartData" :data="stats.chartData" :options="options"/>
             </div>
             <div class="dashLeft">
                 <div class="top-cards flex-row">

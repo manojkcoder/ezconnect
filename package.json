@@ -18,9 +18,11 @@
     },
     "dependencies": {
         "@aesoper/normal-utils": "^0.1.5",
+        "chart.js": "^4.0.0",
         "qrcode.vue": "^3.4.1",
         "vanilla-colorful": "^0.7.2",
         "vcards-js": "^2.10.0",
+        "vue-chartjs": "^5.0.0",
         "vue3-colorpicker": "^2.2.3",
         "vue3-easy-data-table": "^1.5.47",
         "vue3-toastify": "^0.2.1",
