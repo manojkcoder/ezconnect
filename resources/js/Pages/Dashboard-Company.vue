@@ -106,7 +106,7 @@
                     <input type="date" v-model="formData.to_date" format="YYYY-MM-DD" :min="formData.from_date"/>
                 </div>
             </div>
-            <div class="full-row">
+            <div class="full-row" style="background: white;">
                 <Line v-if="stats.chartData" :data="stats.chartData" :options="options"/>
             </div>
             <div class="dashLeft">
