@@ -221,9 +221,10 @@ class ContactRequestsController extends Controller
         
         // Create a file pointer connected to the output stream
         $out = fopen('php://output', 'w');
+        fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
         
         // Write the headers of the CSV file
-        $headers = ['Name', 'Email', 'Phone', 'Title', 'Company Name'];
+        $headers = ['Name', 'Email', 'Phone', 'Title', 'Company Name', 'User', 'DateTime'];
         fputcsv($out, $headers);
         
         // Write the data to the CSV file
@@ -234,6 +235,8 @@ class ContactRequestsController extends Controller
                 $line->phone,
                 $line->title,
                 $line->company_name,
+                $line->user->username,
+                $line->created_at
             ]);
         }
         
